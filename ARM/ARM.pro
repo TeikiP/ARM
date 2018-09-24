@@ -14,6 +14,8 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    vertices.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    vertices.h
