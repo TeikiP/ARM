@@ -14,8 +14,9 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    vertices.cpp
+    vertices.cpp \
+    openglwindow.cpp
 
-HEADERS  += mainwindow.h \
-    vertices.h
+HEADERS  += \
+    vertices.h \
+    openglwindow.h
