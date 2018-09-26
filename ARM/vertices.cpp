@@ -19,8 +19,8 @@ Vertices::Vertices()
 /* Constructor with known size */
 Vertices::Vertices(int size)
 {
-    this->coords = new QVector3D[size * size * size]();
-    this->colors = new QColor[size * size * size]();
+    this->coords = new GLfloat[size * size * size * 3]();
+    this->colors = new GLfloat[size * size * size]();
     this->size = size;
 }
 
@@ -33,39 +33,50 @@ Vertices::~Vertices()
 
 /*************************GETTERS & SETTERS************************************/
 
-void Vertices::setColor(unsigned int x, unsigned int y, unsigned int z, int value)
+void Vertices::setColorAt(unsigned int x, unsigned int y, unsigned int z, float value)
 {
     colors[x * size * size + y * size + z] = value;
 }
 
-QColor Vertices::getColor(unsigned int x, unsigned int y, unsigned int z)
+GLfloat Vertices::getColorAt(unsigned int x, unsigned int y, unsigned int z)
 {
     return colors[x * size * size + y * size + z];
 }
 
-void Vertices::setColor(unsigned int index, int value)
+void Vertices::setColorAt(unsigned int index, float value)
 {
     colors[index] = value;
 }
 
-QColor Vertices::getColor(unsigned int index)
+GLfloat Vertices::getColorAt(unsigned int index)
 {
     return colors[index];
 }
 
-void Vertices::setCoords(unsigned int index, unsigned int x, unsigned int y, unsigned int z)
+GLfloat* Vertices::getColors()
 {
-    coords[index].setX(x);
-    coords[index].setY(y);
-    coords[index].setZ(z);
+    return colors;
 }
 
-QVector3D Vertices::getCoords(int index)
+void Vertices::setCoordsAt(unsigned int index, unsigned int x, unsigned int y, unsigned int z)
+{
+    coords[index] = x;
+    coords[index+1] = y;
+    coords[index+2] = z;
+}
+
+GLfloat Vertices::getCoordsAt(unsigned int index)
 {
     return coords[index];
 }
 
-int Vertices::getSize()
+GLfloat* Vertices::getCoords()
+{
+    return coords;
+}
+
+
+unsigned int Vertices::getSize()
 {
     return size;
 }
@@ -108,8 +119,8 @@ void Vertices::readFile(const char* path)
         return;
     }
 
-    this->coords = new QVector3D[size * size * size]();
-    this->colors = new QColor[size * size * size]();
+    this->coords = new GLfloat[size * size * size * 3]();
+    this->colors = new GLfloat[size * size * size]();
 
     // Third line (max value)
     const short min_value = 0;
@@ -130,8 +141,8 @@ void Vertices::readFile(const char* path)
                     out << "Invalid color value in PGM3D file." << endl;
 
                 // Set values
-                this->setCoords(index, x, y, z);
-                this->setColor(index, value);
+                this->setCoordsAt(index, x, y, z);
+                this->setColorAt(index, value);
 
                 index++;
             }

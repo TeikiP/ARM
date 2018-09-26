@@ -1,4 +1,9 @@
 #include "openglwindow.h"
+#include "vertices.h"
+
+#include <iostream>
+
+using namespace std;
 
 #include <QtGui/QGuiApplication>
 #include <QtGui/QMatrix4x4>
@@ -43,6 +48,8 @@ int main(int argc, char **argv)
     window.show();
 
     window.setAnimating(true);
+
+
 
     return app.exec();
 }
@@ -90,11 +97,14 @@ void TriangleWindow::render()
 
     m_program->setUniformValue(m_matrixUniform, matrix);
 
-    Vertices vertex = new Vertices();
+    Vertices *vertex = new Vertices();
     vertex->readFile("../shepp_logan.pgm3d");
 
-    GLfloat *vertices = vertex.getCoords();
-    GLfloat *colors = vertex.getColors();
+    GLfloat *vertices = vertex->getCoords();
+    GLfloat *colors = vertex->getColors();
+
+    cout << colors[63444] << endl;
+    cout << colors[63445] << endl;
 
 
     glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, vertices);
@@ -103,7 +113,7 @@ void TriangleWindow::render()
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
-    glDrawArrays(GL_POINT, 0, vertex.getSize());
+    glDrawArrays(GL_POINT, 0, vertex->getSize());
 
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(0);

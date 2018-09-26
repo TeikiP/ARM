@@ -1,14 +1,13 @@
 #ifndef VERTICES_H
 #define VERTICES_H
 
-#include <QVector3D>
-#include <QColor>
+#include <QtGui>
 
 class Vertices
 {
 private:
-    QVector3D *coords;
-    QColor *colors;
+    GLfloat *coords;
+    GLfloat *colors;
     unsigned int size;
 
 public:
@@ -16,16 +15,18 @@ public:
     Vertices(int size);
     ~Vertices();
 
-    void setColor(unsigned int x, unsigned int y, unsigned int z, int value);
-    QColor getColor(unsigned int x, unsigned int y, unsigned int z);
+    void setColorAt(unsigned int x, unsigned int y, unsigned int z, float value);
+    GLfloat getColorAt(unsigned int x, unsigned int y, unsigned int z);
 
-    void setColor(unsigned int index, int value);
-    QColor getColor(unsigned int index);
+    void setColorAt(unsigned int index, float value);
+    GLfloat getColorAt(unsigned int index);
+    GLfloat* getColors();
 
-    void setCoords(unsigned int index, unsigned int x, unsigned int y, unsigned int z);
-    QVector3D getCoords(int index);
+    void setCoordsAt(unsigned int index, unsigned int x, unsigned int y, unsigned int z);
+    GLfloat getCoordsAt(unsigned int index);
+    GLfloat* getCoords();
 
-    int getSize();
+    unsigned int getSize();
 
     void readFile(const char* path);
 };
