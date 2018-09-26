@@ -91,31 +91,33 @@ void TriangleWindow::render()
     m_program->bind();
 
     QMatrix4x4 matrix;
-    matrix.perspective(60.0f, 4.0f/3.0f, 0.1f, 100.0f);
-    matrix.translate(0, 0, -2);
-    //matrix.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
+    matrix.perspective(60.0f, 4.0f/3.0f, 0.1f, 10000.0f);
+    matrix.translate(0, 0, -100);
+    matrix.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
 
     m_program->setUniformValue(m_matrixUniform, matrix);
 
     Vertices *vertex = new Vertices();
     vertex->readFile("../shepp_logan.pgm3d");
+    int size = vertex->getSize();
 
     GLfloat *vertices = vertex->getCoords();
+//    for(int i=0; i< size * size * size; ++i){
+//        vertices[i] /= 64.0;
+//    }
     GLfloat *colors = vertex->getColors();
-
-    cout << colors[63444] << endl;
-    cout << colors[63445] << endl;
-
 
     glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, vertices);
     glVertexAttribPointer(m_colAttr, 1, GL_FLOAT, GL_FALSE, 0, colors);
 
     glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+    //glEnableVertexAttribArray(1);
+    glEnable(GL_PROGRAM_POINT_SIZE);
 
-    glDrawArrays(GL_POINT, 0, vertex->getSize());
+    glDrawArrays(GL_POINTS, 0, size * size * size );//3);//
 
-    glDisableVertexAttribArray(1);
+    glDisable(GL_PROGRAM_POINT_SIZE);
+    //glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(0);
 
     m_program->release();
