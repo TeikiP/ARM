@@ -24,6 +24,9 @@ private:
     GLuint m_posAttr;
     GLuint m_colAttr;
     GLuint m_matrixUniform;
+    GLfloat *m_vertices;
+    GLfloat *m_color;
+    int m_size;
 
     QOpenGLShaderProgram *m_program;
     int m_frame;
@@ -79,6 +82,15 @@ void TriangleWindow::initialize()
     m_posAttr = m_program->attributeLocation("posAttr");
     m_colAttr = m_program->attributeLocation("colAttr");
     m_matrixUniform = m_program->uniformLocation("matrix");
+    Vertices *vertex = new Vertices();
+    vertex->readFile("../shepp_logan.pgm3d");
+    m_size = vertex->getSize();
+    m_vertices = vertex->getCoords();
+    m_color = vertex->getColors();
+//    for(int i = 0; i<m_size*m_size; i++){
+//        cout << "i: " << i << " ";
+//        cout<< m_vertices[i] << endl;
+//    }
 }
 
 void TriangleWindow::render()
@@ -97,24 +109,15 @@ void TriangleWindow::render()
 
     m_program->setUniformValue(m_matrixUniform, matrix);
 
-    Vertices *vertex = new Vertices();
-    vertex->readFile("../shepp_logan.pgm3d");
-    int size = vertex->getSize();
-
-    GLfloat *vertices = vertex->getCoords();
-//    for(int i=0; i< size * size * size; ++i){
-//        vertices[i] /= 64.0;
-//    }
-    GLfloat *colors = vertex->getColors();
-
-    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, vertices);
-    glVertexAttribPointer(m_colAttr, 1, GL_FLOAT, GL_FALSE, 0, colors);
+    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, m_vertices);
+    glVertexAttribPointer(m_colAttr, 1, GL_FLOAT, GL_FALSE, 0, m_color);
 
     glEnableVertexAttribArray(0);
     //glEnableVertexAttribArray(1);
     glEnable(GL_PROGRAM_POINT_SIZE);
 
-    glDrawArrays(GL_POINTS, 0, size * size * size );//3);//
+    int size = m_size * m_size * m_size;
+    glDrawArrays(GL_POINTS, 0, size);//3);//
 
     glDisable(GL_PROGRAM_POINT_SIZE);
     //glDisableVertexAttribArray(1);

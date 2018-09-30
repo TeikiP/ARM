@@ -2,7 +2,9 @@
 
 #include <QFile>
 #include <QTextStream>
+#include<iostream>
 
+using namespace std;
 /* Console output global variable */
 QTextStream out(stdout);
 
@@ -35,12 +37,12 @@ Vertices::~Vertices()
 
 void Vertices::setColorAt(unsigned int x, unsigned int y, unsigned int z, float value)
 {
-    colors[x * size * size + y * size + z] = value;
+    colors[x * size + y + z * size * size] = value;
 }
 
 GLfloat Vertices::getColorAt(unsigned int x, unsigned int y, unsigned int z)
 {
-    return colors[x * size * size + y * size + z];
+    return colors[x * size + y + z * size * size];
 }
 
 void Vertices::setColorAt(unsigned int index, float value)
@@ -119,8 +121,8 @@ void Vertices::readFile(const char* path)
         return;
     }
 
-    this->coords = new GLfloat[size * size * size * 3]();
-    this->colors = new GLfloat[size * size * size]();
+    this->coords = new GLfloat[size * size * size * 3];
+    this->colors = new GLfloat[size * size * size];
 
     // Third line (max value)
     const short min_value = 0;
@@ -128,12 +130,12 @@ void Vertices::readFile(const char* path)
     in >> max_value;
 
     // Remainling lines (values)
-    unsigned int index = 0;
+    unsigned int indexCoords = 0, indexColors = 0;
     short value;
 
-    for (unsigned int x = 0; x < this->size; x++)
-        for (unsigned int y = 0; y < this->size; y++)
-            for (unsigned int z = 0; z < this->size; z++) {
+    for (unsigned int z = 0; z < this->size; z++){
+        for (unsigned int x = 0; x < this->size; x++){
+            for (unsigned int y = 0; y < this->size; y++) {
                 in >> value;
 
                 // Bounds check
@@ -141,11 +143,15 @@ void Vertices::readFile(const char* path)
                     out << "Invalid color value in PGM3D file." << endl;
 
                 // Set values
-                this->setCoordsAt(index, x, y, z);
-                this->setColorAt(index, value);
+                this->setCoordsAt(indexCoords, this->size - x - 1, y, z); // this->size - x - 1 => image a l'endroit et bas gauche image centre du rendu
+                this->setColorAt(indexColors, value);
 
-                index++;
+                indexCoords += 3;
+                indexColors++;
+
             }
+        }
+    }
 
     // Closing the file
     file.close();
