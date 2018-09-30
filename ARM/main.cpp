@@ -87,10 +87,6 @@ void TriangleWindow::initialize()
     m_size = vertex->getSize();
     m_vertices = vertex->getCoords();
     m_color = vertex->getColors();
-//    for(int i = 0; i<m_size*m_size; i++){
-//        cout << "i: " << i << " ";
-//        cout<< m_vertices[i] << endl;
-//    }
 }
 
 void TriangleWindow::render()
@@ -117,7 +113,7 @@ void TriangleWindow::render()
     glEnable(GL_PROGRAM_POINT_SIZE);
 
     int size = m_size * m_size * m_size;
-    glDrawArrays(GL_POINTS, 0, size);//3);//
+    glDrawArrays(GL_POINTS, 0, size);
 
     glDisable(GL_PROGRAM_POINT_SIZE);
     //glDisableVertexAttribArray(1);

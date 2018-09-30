@@ -2,6 +2,7 @@
 #define VERTICES_H
 
 #include <QtGui>
+#include <QVector>
 
 class Vertices
 {
@@ -29,6 +30,8 @@ public:
     unsigned int getSize();
 
     void readFile(const char* path);
+
+    QVector<GLfloat> func();
 };
 
 #endif // VERTICES_H

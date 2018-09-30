@@ -2,9 +2,8 @@
 
 #include <QFile>
 #include <QTextStream>
-#include<iostream>
 
-using namespace std;
+
 /* Console output global variable */
 QTextStream out(stdout);
 
@@ -143,7 +142,7 @@ void Vertices::readFile(const char* path)
                     out << "Invalid color value in PGM3D file." << endl;
 
                 // Set values
-                this->setCoordsAt(indexCoords, this->size - x - 1, y, z); // this->size - x - 1 => image a l'endroit et bas gauche image centre du rendu
+                this->setCoordsAt(indexCoords, this->size - x - 1, y, z); // this->size - x - 1 => image in place and bottom left image = center of rendering
                 this->setColorAt(indexColors, value);
 
                 indexCoords += 3;
@@ -155,4 +154,221 @@ void Vertices::readFile(const char* path)
 
     // Closing the file
     file.close();
+}
+
+//not finish
+QVector<GLfloat> Vertices::func()
+{
+    QVector<GLfloat> vec(0);
+    unsigned int index = 0, indexTop = 0, indexBottom = 0, indexLeft = 0, indexRight = 0, indexFront = 0, indexBehind = 0;
+
+    for (unsigned int z = 0; z < this->size; z++){
+        for (unsigned int x = 0; x < this->size; x++){
+            for (unsigned int y = 0; y < this->size; y++) {
+
+                if( z == 0 )
+                {
+                    if(x == 0 && y == 0 )
+                    {
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == this->size - 1 && y == 0 )
+                    {
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == 0 && y == this->size - 1 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == this->size - 1 && y == this->size - 1 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( y == 0 )
+                    {
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( y == this->size - 1 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == 0 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == this->size - 1 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                }
+
+                else if (z == this->size - 1)
+                {
+                    if(x == 0 && y == 0 )
+                    {
+                        indexRight =  z * size * size * size + x * size + (y + 1);
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == this->size - 1 && y == 0 )
+                    {
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == 0 && y == this->size - 1 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == this->size - 1 && y == this->size - 1 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                    }
+                    else if( y == 0 )
+                    {
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                    }
+                    else if( y == this->size - 1 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == 0 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == this->size - 1 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                    }
+                    else
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                    }
+                }
+                else
+                {
+                    if(x == 0 && y == 0 )
+                    {
+                        indexRight =  z * size * size * size + x * size + (y + 1);
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == this->size - 1 && y == 0 )
+                    {
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == 0 && y == this->size - 1 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == this->size - 1 && y == this->size - 1 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( y == 0 )
+                    {
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( y == this->size - 1 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == 0 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else if( x == this->size - 1 )
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                    else
+                    {
+                        indexLeft = z * size * size * size + x * size + (y - 1);
+                        indexRight = z * size * size * size + x * size + (y + 1);
+                        indexTop = z * size * size * size + (x - 1) * size + y;
+                        indexBottom = z * size * size * size + (x + 1) * size + y;
+                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                    }
+                }
+
+            }
+        }
+    }
+
+    return vec;
 }
