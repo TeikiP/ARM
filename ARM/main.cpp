@@ -8,6 +8,8 @@
 
 #include <QtCore/qmath.h>
 
+#define PGM3D_PATH "../shepp_logan.pgm3d"
+
 class TriangleWindow : public OpenGLWindow
 {
 public:
@@ -79,7 +81,7 @@ void TriangleWindow::initialize()
     m_colAttr = m_program->attributeLocation("colAttr");
     m_matrixUniform = m_program->uniformLocation("matrix");
     Vertices *vertex = new Vertices();
-    vertex->readFile("../shepp_logan.pgm3d");
+    vertex->readFile(PGM3D_PATH);
     m_size = vertex->getSize();
     m_vertices = vertex->getCoords();
     m_color = vertex->getColors();
