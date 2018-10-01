@@ -16,14 +16,14 @@ public:
     Vertices(int size);
     ~Vertices();
 
-    void setColorAt(unsigned int x, unsigned int y, unsigned int z, float value);
-    GLfloat getColorAt(unsigned int x, unsigned int y, unsigned int z);
+    void setColorAt(int x, int y, int z, float value);
+    GLfloat getColorAt(int x, int y, int z);
 
     void setColorAt(unsigned int index, float value);
     GLfloat getColorAt(unsigned int index);
     GLfloat* getColors();
 
-    void setCoordsAt(unsigned int index, unsigned int x, unsigned int y, unsigned int z);
+    void setCoordsAt(unsigned int index, int x, int y, int z);
     GLfloat getCoordsAt(unsigned int index);
     GLfloat* getCoords();
 

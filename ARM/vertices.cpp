@@ -34,12 +34,12 @@ Vertices::~Vertices()
 
 /*************************GETTERS & SETTERS************************************/
 
-void Vertices::setColorAt(unsigned int x, unsigned int y, unsigned int z, float value)
+void Vertices::setColorAt(int x, int y, int z, float value)
 {
     colors[x * size + y + z * size * size] = value;
 }
 
-GLfloat Vertices::getColorAt(unsigned int x, unsigned int y, unsigned int z)
+GLfloat Vertices::getColorAt(int x, int y, int z)
 {
     return colors[x * size + y + z * size * size];
 }
@@ -61,7 +61,7 @@ GLfloat* Vertices::getColors()
     return colors;
 }
 
-void Vertices::setCoordsAt(unsigned int index, unsigned int x, unsigned int y, unsigned int z)
+void Vertices::setCoordsAt(unsigned int index, int x, int y, int z)
 {
     coords[index] = x;
     coords[index + 1] = y;
@@ -132,11 +132,12 @@ void Vertices::readFile(const char* path)
 
     // Remaining lines (values)
     unsigned int index = 0;
+    int offSet = this->size / 2;
     short value;
 
-    for (unsigned int z = 0; z < this->size; z++){
-        for (unsigned int x = 0; x < this->size; x++){
-            for (unsigned int y = 0; y < this->size; y++) {
+    for (int x = 0; x < this->size; x++){
+        for (int y = 0; y < this->size; y++){
+            for (int z = 0; z < this->size; z++) {
                 in >> value;
 
                 // Bounds check
@@ -145,7 +146,8 @@ void Vertices::readFile(const char* path)
 
                 // Set values
                 //this->setCoordsAt(index, this->size - x - 1, y, z); // this->size - x - 1 => image in place and bottom left image = center of rendering
-                this->setCoordsAt(index, x, y, z);
+                //this->setCoordsAt(index, x - offSet, z - offSet, y - offSet); //Demo and testing purpose
+                this->setCoordsAt(index, x - offSet, y - offSet, z - offSet); //Apparently correct orientation
                 this->setColorAt(index, value);
 
                 index += 3;
