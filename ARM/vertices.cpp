@@ -21,7 +21,7 @@ Vertices::Vertices()
 Vertices::Vertices(int size)
 {
     this->coords = new GLfloat[size * size * size * 3]();
-    this->colors = new GLfloat[size * size * size]();
+    this->colors = new GLfloat[size * size * size * 3]();
     this->size = size;
 }
 
@@ -47,6 +47,8 @@ GLfloat Vertices::getColorAt(unsigned int x, unsigned int y, unsigned int z)
 void Vertices::setColorAt(unsigned int index, float value)
 {
     colors[index] = value;
+    colors[index + 1] = value;
+    colors[index + 2] = value;
 }
 
 GLfloat Vertices::getColorAt(unsigned int index)
@@ -61,9 +63,9 @@ GLfloat* Vertices::getColors()
 
 void Vertices::setCoordsAt(unsigned int index, unsigned int x, unsigned int y, unsigned int z)
 {
-    coords[index * 3] = x;
-    coords[index * 3 + 1] = y;
-    coords[index * 3 + 2] = z;
+    coords[index] = x;
+    coords[index + 1] = y;
+    coords[index + 2] = z;
 }
 
 GLfloat Vertices::getCoordsAt(unsigned int index)
@@ -121,7 +123,7 @@ void Vertices::readFile(const char* path)
     }
 
     this->coords = new GLfloat[size * size * size * 3];
-    this->colors = new GLfloat[size * size * size];
+    this->colors = new GLfloat[size * size * size * 3];
 
     // Third line (max value)
     const short min_value = 0;
@@ -142,12 +144,11 @@ void Vertices::readFile(const char* path)
                     out << "Invalid color value in PGM3D file." << endl;
 
                 // Set values
-                this->setCoordsAt(index, this->size - x - 1, y, z); // this->size - x - 1 => image in place and bottom left image = center of rendering
-                //this->setCoordsAt(indexCoords, x, y, z);
+                //this->setCoordsAt(index, this->size - x - 1, y, z); // this->size - x - 1 => image in place and bottom left image = center of rendering
+                this->setCoordsAt(index, x, y, z);
                 this->setColorAt(index, value);
 
-                index++;
-
+                index += 3;
             }
         }
     }

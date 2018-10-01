@@ -22,7 +22,6 @@ private:
     GLuint m_matrixUniform;
     GLfloat *m_vertices;
     GLfloat *m_color;
-    GLfloat *m_color3;
     int m_size;
 
     QOpenGLShaderProgram *m_program;
@@ -84,11 +83,6 @@ void TriangleWindow::initialize()
     m_size = vertex->getSize();
     m_vertices = vertex->getCoords();
     m_color = vertex->getColors();
-
-    m_color3 = new GLfloat[m_size * m_size * m_size * 3]();
-
-    for (int i=0; i< m_size * m_size * m_size * 3; i++)
-        m_color3[i] = m_color[i/3];
 }
 
 void TriangleWindow::render()
@@ -108,8 +102,7 @@ void TriangleWindow::render()
     m_program->setUniformValue(m_matrixUniform, matrix);
 
     glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, m_vertices);
-    //glVertexAttribPointer(m_colAttr, 1, GL_FLOAT, GL_FALSE, 0, m_color);
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, m_color3);
+    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, m_color);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
