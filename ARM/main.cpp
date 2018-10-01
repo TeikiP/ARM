@@ -22,7 +22,8 @@ private:
     GLuint m_posAttr;
     GLuint m_colAttr;
     GLuint m_matrixUniform;
-    GLfloat *m_vertices;
+    //GLfloat *m_vertices;
+    QVector<GLfloat> m_vertices;
     GLfloat *m_color;
     int m_size;
 
@@ -82,9 +83,10 @@ void TriangleWindow::initialize()
     m_matrixUniform = m_program->uniformLocation("matrix");
     Vertices *vertex = new Vertices();
     vertex->readFile(PGM3D_PATH);
-    m_size = vertex->getSize();
-    m_vertices = vertex->getCoords();
+    //m_size = vertex->getSize();
+    m_vertices = vertex->func();
     m_color = vertex->getColors();
+    m_size = m_vertices.size();
 }
 
 void TriangleWindow::render()
@@ -103,18 +105,19 @@ void TriangleWindow::render()
 
     m_program->setUniformValue(m_matrixUniform, matrix);
 
-    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, m_vertices);
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, m_color);
+    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, m_vertices.data());
+    //glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, m_color);
 
     glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+    //glEnableVertexAttribArray(1);
     glEnable(GL_PROGRAM_POINT_SIZE);
 
-    int size = m_size * m_size * m_size;
+    //int size = m_size * m_size * m_size;
+    int size = m_size / 3;
     glDrawArrays(GL_POINTS, 0, size);
 
     glDisable(GL_PROGRAM_POINT_SIZE);
-    glDisableVertexAttribArray(1);
+    //glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(0);
 
     m_program->release();

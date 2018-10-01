@@ -3,6 +3,9 @@
 #include <QFile>
 #include <QTextStream>
 
+#include <iostream>
+
+using namespace std;
 
 /* Console output global variable */
 QTextStream out(stdout);
@@ -185,8 +188,8 @@ void Vertices::readFile(const char* path)
                 // Set values
                 //this->setCoordsAt(index, this->size - x - 1, y, z); // this->size - x - 1 => image in place and bottom left image = center of rendering
                 this->setCoordsAt(index, x - offSet, y - offSet, z - offSet);
-                //this->setColorAt(index, value); //Correct modelisation
-                this->setCustomColorAt(index, value); //Demo and testing modelisation
+                this->setColorAt(index, value); //Correct modelisation
+                //this->setCustomColorAt(index, value); //Demo and testing modelisation
 
                 index += 3;
             }
@@ -202,72 +205,111 @@ QVector<GLfloat> Vertices::func()
 {
     QVector<GLfloat> vec(0);
     unsigned int index = 0, indexTop = 0, indexBottom = 0, indexLeft = 0, indexRight = 0, indexFront = 0, indexBehind = 0;
+    unsigned int color = 0, colorTop = 0, colorBottom = 0, colorLeft = 0, colorRight = 0, colorFront = 0, colorBehind = 0;
+    bool add = false;
 
     for (unsigned int z = 0; z < this->size; z++){
         for (unsigned int x = 0; x < this->size; x++){
-            for (unsigned int y = 0; y < this->size; y++) {
+            for (unsigned int y = 0; y < 3 * this->size; y += 3) {
+
+                add = false;
+                color = this->colors[index];
+
+                indexLeft = index - 3;
+                indexRight = index + 3;
+                indexTop = index - 3*size;
+                indexBottom = index + 3*size;
+                indexFront = index - 3*size*size;
+                indexBehind = index + 3*size*size;
 
                 if( z == 0 )
                 {
                     if(x == 0 && y == 0 )
                     {
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorRight = this->colors[indexRight];
+                        colorBottom = this->colors[indexBottom];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorRight || color != colorBottom || color != colorBehind)
+                            add = true;
                     }
                     else if( x == this->size - 1 && y == 0 )
                     {
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorRight = this->colors[indexRight];
+                        colorTop = this->colors[indexTop];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorRight || color != colorTop || color != colorBehind)
+                            add = true;
                     }
                     else if( x == 0 && y == this->size - 1 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorBottom = this->colors[indexBottom];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorLeft || color != colorBottom || color != colorBehind)
+                            add = true;
                     }
                     else if( x == this->size - 1 && y == this->size - 1 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorTop = this->colors[indexTop];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorLeft || color != colorTop || color != colorBehind)
+                            add = true;
                     }
                     else if( y == 0 )
                     {
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorRight = this->colors[indexRight];
+                        colorTop = this->colors[indexTop];
+                        colorBottom = this->colors[indexBottom];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorRight || color != colorTop || color != colorBottom || color != colorBehind)
+                            add = true;
                     }
                     else if( y == this->size - 1 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorTop = this->colors[indexTop];
+                        colorBottom = this->colors[indexBottom];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorLeft || color != colorTop || color != colorBottom || color != colorBehind)
+                            add = true;
                     }
                     else if( x == 0 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorRight = this->colors[indexRight];
+                        colorBottom = this->colors[indexBottom];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorLeft || color != colorRight || color != colorBottom || color != colorBehind)
+                            add = true;
                     }
                     else if( x == this->size - 1 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorRight = this->colors[indexRight];
+                        colorTop = this->colors[indexTop];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorLeft || color != colorRight || color != colorTop || color != colorBehind)
+                            add = true;
                     }
                     else
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorRight = this->colors[indexRight];
+                        colorTop = this->colors[indexTop];
+                        colorBottom = this->colors[indexBottom];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorLeft || color != colorRight || color != colorTop || color != colorBottom || color != colorBehind)
+                            add = true;
                     }
                 }
 
@@ -275,137 +317,200 @@ QVector<GLfloat> Vertices::func()
                 {
                     if(x == 0 && y == 0 )
                     {
-                        indexRight =  z * size * size * size + x * size + (y + 1);
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        colorRight = this->colors[indexRight];
+                        colorBottom = this->colors[indexBottom];
+                        colorFront = this->colors[indexFront];
+
+                        if(color != colorRight || color != colorBottom || color != colorFront)
+                            add = true;
                     }
                     else if( x == this->size - 1 && y == 0 )
                     {
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        colorRight = this->colors[indexRight];
+                        colorTop = this->colors[indexTop];
+                        colorFront = this->colors[indexFront];
+
+                        if(color != colorRight || color != colorTop || color != colorFront)
+                            add = true;
                     }
                     else if( x == 0 && y == this->size - 1 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorBottom = this->colors[indexBottom];
+                        colorFront = this->colors[indexFront];
+
+                        if(color != colorLeft || color != colorBottom || color != colorFront)
+                            add = true;
                     }
                     else if( x == this->size - 1 && y == this->size - 1 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorTop = this->colors[indexTop];
+                        colorFront = this->colors[indexFront];
+
+                        if(color != colorLeft || color != colorTop || color != colorFront)
+                            add = true;
                     }
                     else if( y == 0 )
                     {
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        colorRight = this->colors[indexRight];
+                        colorTop = this->colors[indexTop];
+                        colorBottom = this->colors[indexBottom];
+                        colorFront = this->colors[indexFront];
+
+                        if(color != colorRight || color != colorTop || color != colorBottom || color != colorFront)
+                            add = true;
                     }
                     else if( y == this->size - 1 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorTop = this->colors[indexTop];
+                        colorBottom = this->colors[indexBottom];
+                        colorFront = this->colors[indexFront];
+
+                        if(color != colorLeft || color != colorTop || color != colorBottom || color != colorFront)
+                            add = true;
                     }
                     else if( x == 0 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorRight = this->colors[indexRight];
+                        colorBottom = this->colors[indexBottom];
+                        colorFront = this->colors[indexFront];
+
+                        if(color != colorLeft || color != colorRight || color != colorBottom || color != colorFront)
+                            add = true;
                     }
                     else if( x == this->size - 1 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorRight = this->colors[indexRight];
+                        colorTop = this->colors[indexTop];
+                        colorFront = this->colors[indexFront];
+
+                        if(color != colorLeft || color != colorRight || color != colorTop || color != colorFront)
+                            add = true;
                     }
                     else
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorRight = this->colors[indexRight];
+                        colorTop = this->colors[indexTop];
+                        colorBottom = this->colors[indexBottom];
+                        colorFront = this->colors[indexFront];
+
+                        if(color != colorLeft || color != colorRight || color != colorTop || color != colorBottom || color != colorFront)
+                            add = true;
                     }
                 }
                 else
                 {
                     if(x == 0 && y == 0 )
                     {
-                        indexRight =  z * size * size * size + x * size + (y + 1);
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorRight = this->colors[indexRight];
+                        colorBottom = this->colors[indexBottom];
+                        colorFront = this->colors[indexFront];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorRight || color != colorBottom || color != colorFront || color != colorBehind)
+                            add = true;
                     }
                     else if( x == this->size - 1 && y == 0 )
                     {
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorRight = this->colors[indexRight];
+                        colorTop = this->colors[indexTop];
+                        colorFront = this->colors[indexFront];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorRight || color != colorTop || color != colorFront || color != colorBehind)
+                            add = true;
                     }
                     else if( x == 0 && y == this->size - 1 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorBottom = this->colors[indexBottom];
+                        colorFront = this->colors[indexFront];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorLeft || color != colorBottom || color != colorFront || color != colorBehind)
+                            add = true;
                     }
                     else if( x == this->size - 1 && y == this->size - 1 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorTop = this->colors[indexTop];
+                        colorFront = this->colors[indexFront];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorLeft || color != colorTop || color != colorFront || color != colorBehind)
+                            add = true;
                     }
                     else if( y == 0 )
                     {
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorRight = this->colors[indexRight];
+                        colorTop = this->colors[indexTop];
+                        colorBottom = this->colors[indexBottom];
+                        colorFront = this->colors[indexFront];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorRight || color != colorTop || color != colorBottom || color != colorFront || color != colorBehind)
+                            add = true;
                     }
                     else if( y == this->size - 1 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorTop = this->colors[indexTop];
+                        colorBottom = this->colors[indexBottom];
+                        colorFront = this->colors[indexFront];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorLeft || color != colorTop || color != colorBottom || color != colorFront || color != colorBehind)
+                            add = true;
                     }
                     else if( x == 0 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorRight = this->colors[indexRight];
+                        colorBottom = this->colors[indexBottom];
+                        colorFront = this->colors[indexFront];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorLeft || color != colorRight || color != colorBottom || color != colorFront || color != colorBehind)
+                            add = true;
                     }
                     else if( x == this->size - 1 )
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorRight = this->colors[indexRight];
+                        colorTop = this->colors[indexTop];
+                        colorFront = this->colors[indexFront];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorLeft || color != colorRight || color != colorTop || color != colorFront || color != colorBehind)
+                            add = true;
                     }
                     else
                     {
-                        indexLeft = z * size * size * size + x * size + (y - 1);
-                        indexRight = z * size * size * size + x * size + (y + 1);
-                        indexTop = z * size * size * size + (x - 1) * size + y;
-                        indexBottom = z * size * size * size + (x + 1) * size + y;
-                        indexFront = (z - 1) * size * size * size + x * size + y;
-                        indexBehind = (z + 1) * size * size * size + x * size + y;
+                        colorLeft = this->colors[indexLeft];
+                        colorRight = this->colors[indexRight];
+                        colorTop = this->colors[indexTop];
+                        colorBottom = this->colors[indexBottom];
+                        colorFront = this->colors[indexFront];
+                        colorBehind = this->colors[indexBehind];
+
+                        if(color != colorLeft || color != colorRight || color != colorTop || color != colorBottom || color != colorFront || color != colorBehind)
+                            add = true;
                     }
                 }
+
+                if(add)
+                {
+                    vec.push_back(this->coords[index]);
+                    vec.push_back(this->coords[index+1]);
+                    vec.push_back(this->coords[index+2]);
+                }
+
+                index += 3;
 
             }
         }
