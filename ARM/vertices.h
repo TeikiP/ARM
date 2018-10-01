@@ -20,6 +20,7 @@ public:
     GLfloat getColorAt(int x, int y, int z);
 
     void setColorAt(unsigned int index, float value);
+    void setCustomColorAt(unsigned int index, float value);
     GLfloat getColorAt(unsigned int index);
     GLfloat* getColors();
 

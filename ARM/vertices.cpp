@@ -51,6 +51,44 @@ void Vertices::setColorAt(unsigned int index, float value)
     colors[index + 2] = value;
 }
 
+void Vertices::setCustomColorAt(unsigned int index, float value)
+{
+    // WHITE -> RED
+    if (value == 255) {
+        colors[index] = 255;
+        colors[index + 1] = 0;
+        colors[index + 2] = 0;
+    }
+
+    // DARK GREY -> CYAN
+    else if (value == 51) {
+        colors[index] = 0;
+        colors[index + 1] = 255;
+        colors[index + 2] = 255;
+    }
+
+    // LIGHT GREY -> YELLOW
+    else if (value == 76) {
+        colors[index] = 255;
+        colors[index + 1] = 255;
+        colors[index + 2] = 0;
+    }
+
+    // GRAY MIXES -> MAGENTA
+    else if (value == 25 || value == 102) {
+        colors[index] = 255;
+        colors[index + 1] = 0;
+        colors[index + 2] = 255;
+    }
+
+    //default
+    else {
+        colors[index] = value;
+        colors[index + 1] = value;
+        colors[index + 2] = value;
+    }
+}
+
 GLfloat Vertices::getColorAt(unsigned int index)
 {
     return colors[index];
@@ -146,9 +184,9 @@ void Vertices::readFile(const char* path)
 
                 // Set values
                 //this->setCoordsAt(index, this->size - x - 1, y, z); // this->size - x - 1 => image in place and bottom left image = center of rendering
-                //this->setCoordsAt(index, x - offSet, z - offSet, y - offSet); //Demo and testing purpose
-                this->setCoordsAt(index, x - offSet, y - offSet, z - offSet); //Apparently correct orientation
-                this->setColorAt(index, value);
+                this->setCoordsAt(index, x - offSet, y - offSet, z - offSet);
+                //this->setColorAt(index, value); //Correct modelisation
+                this->setCustomColorAt(index, value); //Demo and testing modelisation
 
                 index += 3;
             }
