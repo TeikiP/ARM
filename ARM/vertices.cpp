@@ -61,9 +61,9 @@ GLfloat* Vertices::getColors()
 
 void Vertices::setCoordsAt(unsigned int index, unsigned int x, unsigned int y, unsigned int z)
 {
-    coords[index] = x;
-    coords[index+1] = y;
-    coords[index+2] = z;
+    coords[index * 3] = x;
+    coords[index * 3 + 1] = y;
+    coords[index * 3 + 2] = z;
 }
 
 GLfloat Vertices::getCoordsAt(unsigned int index)
@@ -128,8 +128,8 @@ void Vertices::readFile(const char* path)
     short max_value;
     in >> max_value;
 
-    // Remainling lines (values)
-    unsigned int indexCoords = 0, indexColors = 0;
+    // Remaining lines (values)
+    unsigned int index = 0;
     short value;
 
     for (unsigned int z = 0; z < this->size; z++){
@@ -142,11 +142,11 @@ void Vertices::readFile(const char* path)
                     out << "Invalid color value in PGM3D file." << endl;
 
                 // Set values
-                this->setCoordsAt(indexCoords, this->size - x - 1, y, z); // this->size - x - 1 => image in place and bottom left image = center of rendering
-                this->setColorAt(indexColors, value);
+                this->setCoordsAt(index, this->size - x - 1, y, z); // this->size - x - 1 => image in place and bottom left image = center of rendering
+                //this->setCoordsAt(indexCoords, x, y, z);
+                this->setColorAt(index, value);
 
-                indexCoords += 3;
-                indexColors++;
+                index++;
 
             }
         }
