@@ -9,15 +9,13 @@ class Vertices
 private:
     GLfloat *coords;
     GLfloat *colors;
+    QVector<int> limitsIndices;
     unsigned int size;
 
 public:
     Vertices();
     Vertices(int size);
     ~Vertices();
-
-    void setColorAt(int x, int y, int z, float value);
-    GLfloat getColorAt(int x, int y, int z);
 
     void setColorAt(unsigned int index, float value);
     void setCustomColorAt(unsigned int index, float value);
@@ -34,7 +32,10 @@ public:
 
     QVector<GLfloat> func();
     QVector<GLfloat> func2();
-    //QVector<GLfloat> func_colors(QVector<GLfloat> coords);
+
+    void findLimitsIndices();
+    QVector<GLfloat> getLimitsCoords();
+    QVector<GLfloat> getLimitsColors();
 };
 
 #endif // VERTICES_H
