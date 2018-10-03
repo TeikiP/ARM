@@ -33,6 +33,8 @@ public:
     void readFile(const char* path);
 
     QVector<GLfloat> func();
+    QVector<GLfloat> func2();
+    //QVector<GLfloat> func_colors(QVector<GLfloat> coords);
 };
 
 #endif // VERTICES_H

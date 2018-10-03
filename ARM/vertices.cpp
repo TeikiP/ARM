@@ -518,3 +518,88 @@ QVector<GLfloat> Vertices::func()
 
     return vec;
 }
+
+
+QVector<GLfloat> Vertices::func2()
+{
+    QVector<GLfloat> vec(0);
+    int index = 0, indexTop = 0, indexBottom = 0, indexLeft = 0, indexRight = 0, indexFront = 0, indexBehind = 0;
+    int color = 0, colorTop = 0, colorBottom = 0, colorLeft = 0, colorRight = 0, colorFront = 0, colorBehind = 0;
+
+    for (unsigned int z = 0; z < this->size; z++) {
+        for (unsigned int x = 0; x < this->size; x++) {
+            for (unsigned int y = 0; y < 3 * this->size; y += 3) {
+                // indices
+                indexLeft = index - 3;
+                indexRight = index + 3;
+                indexTop = index - 3*size;
+                indexBottom = index + 3*size;
+                indexFront = index - 3*size*size;
+                indexBehind = index + 3*size*size;
+
+                color = this->colors[index];
+
+                // left & right
+                if (indexLeft < 0) {
+                    colorLeft = color;
+                    colorRight = this->colors[indexRight];
+                }
+                else if (indexRight >= (int) this->size) {
+                    colorLeft = this->colors[indexLeft];
+                    colorRight = color;
+                }
+                else {
+                    colorLeft = this->colors[indexLeft];
+                    colorRight = this->colors[indexRight];
+                }
+
+                // top & bottom
+                if (indexTop < 0) {
+                    colorTop = color;
+                    colorBottom = this->colors[indexBottom];
+                }
+                else if (indexBottom >= (int) this->size) {
+                    colorTop = this->colors[indexTop];
+                    colorBottom = color;
+                }
+                else {
+                    colorTop = this->colors[indexTop];
+                    colorBottom = this->colors[indexBottom];
+                }
+
+                // front & behind
+                if (indexFront < 0) {
+                    colorFront = color;
+                    colorBehind = this->colors[indexBehind];
+                }
+                else if (indexBehind >= (int) this->size) {
+                    colorFront = this->colors[indexFront];
+                    colorBehind = color;
+                }
+                else {
+                    colorFront = this->colors[indexFront];
+                    colorBehind = this->colors[indexBehind];
+                }
+
+
+                // add coordinates of surfaces
+                if (    color != colorLeft  || color != colorRight  ||
+                        color != colorTop   || color != colorBottom ||
+                        color != colorFront || color != colorBehind ) {
+                    vec.push_back(this->coords[index]);
+                    vec.push_back(this->coords[index+1]);
+                    vec.push_back(this->coords[index+2]);
+                }
+
+                index += 3;
+
+            }
+        }
+    }
+
+    return vec;
+}
+/*
+QVector<GLfloat> func_colors(QVector<GLfloat> coords) {
+
+}*/

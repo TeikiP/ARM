@@ -84,7 +84,7 @@ void TriangleWindow::initialize()
     Vertices *vertex = new Vertices();
     vertex->readFile(PGM3D_PATH);
     //m_size = vertex->getSize();
-    m_vertices = vertex->func();
+    m_vertices = vertex->func2();
     m_color = vertex->getColors();
     m_size = m_vertices.size();
 }
