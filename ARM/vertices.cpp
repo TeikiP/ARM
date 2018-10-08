@@ -163,9 +163,9 @@ void Vertices::readFile(const char* path)
     int offSet = this->size / 2;
     short value;
 
-    for (int x = this->size-1; x >= 0; x--) {
-        for (int y = this->size-1; y >= 0; y--) {
-            for (int z = this->size-1; z >= 0; z--) {
+    for (int x = 0; x < (int) this->size; x++) {
+        for (int y = 0; y  < (int) this->size; y++) {
+            for (int z = 0; z  < (int) this->size; z++) {
                 in >> value;
 
                 // Bounds check
