@@ -8,6 +8,9 @@
 
 #include <QtCore/qmath.h>
 
+#include <iostream>
+using namespace std;
+
 #define PGM3D_PATH "../shepp_logan.pgm3d"
 
 class TriangleWindow : public OpenGLWindow
@@ -17,6 +20,10 @@ public:
 
     void initialize() override;
     void render() override;
+
+protected:
+
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
     GLuint m_posAttr;
@@ -30,11 +37,21 @@ private:
 
     QOpenGLShaderProgram *m_program;
     int m_frame;
+
+    int m_angleX;
+    int m_angleY;
+    int m_angleZ;
+
+    bool m_triangle;
+    bool m_point;
 };
 
 TriangleWindow::TriangleWindow()
     : m_program(0)
     , m_frame(0)
+    , m_angleX(0)
+    ,m_triangle(0)
+    ,m_point(1)
 {
 }
 
@@ -105,26 +122,70 @@ void TriangleWindow::render()
     QMatrix4x4 matrix;
     matrix.perspective(60.0f, 4.0f/3.0f, 0.1f, 10000.0f);
     matrix.translate(0, 0, -100);
-    matrix.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
+//    matrix.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
+    matrix.rotate(m_angleX, 1, 0, 0);
+    matrix.rotate(m_angleY, 0, 1, 0);
+    matrix.rotate(m_angleZ, 0, 0, 1);
 
     m_program->setUniformValue(m_matrixUniform, matrix);
 
-    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, m_vertices.data());
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, m_colors.data());
+    if(m_point){
+        glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, m_vertices.data());
+        glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, m_colors.data());
 
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnable(GL_PROGRAM_POINT_SIZE);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnable(GL_PROGRAM_POINT_SIZE);
 
-    //int size = m_size * m_size * m_size;
-    int size = m_size / 3;
-    glDrawArrays(GL_POINTS, 0, size);
+        //int size = m_size * m_size * m_size;
+        int size = m_size / 3;
+        glDrawArrays(GL_POINTS, 0, size);
 
-    glDisable(GL_PROGRAM_POINT_SIZE);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(0);
+        glDisable(GL_PROGRAM_POINT_SIZE);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(0);
+    }
+    else if(m_triangle){
+        //TODO
+        cerr << "Render in mode GL_TRIANGLE is not yet implemented!" << endl;
+        throw ;
+    }
 
     m_program->release();
 
     ++m_frame;
+}
+
+
+void TriangleWindow::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Up :
+        m_angleX += 1;
+        m_angleX %= 360;
+        break;
+    case Qt::Key_Down :
+        m_angleX -= 1;
+        m_angleX %= 360;
+        break;
+    case Qt::Key_Left :
+        m_angleY -= 1;
+        m_angleY %= 360;
+        break;
+    case Qt::Key_Right :
+        m_angleY += 1;
+        m_angleY %= 360;
+        break;
+    case Qt::Key_T :
+        m_triangle = true;
+        m_point = false;
+        break;
+    case Qt::Key_P :
+        m_triangle = false;
+        m_point = true;
+        break;
+    case Qt::Key_Escape :
+        this->destroy();
+        break;
+    }
 }
