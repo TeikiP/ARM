@@ -24,6 +24,7 @@ public:
 protected:
 
     void keyPressEvent(QKeyEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 
 private:
     GLuint m_posAttr;
@@ -37,6 +38,8 @@ private:
 
     QOpenGLShaderProgram *m_program;
     int m_frame;
+
+    float m_distance;
 
     int m_angleX;
     int m_angleY;
@@ -52,6 +55,7 @@ TriangleWindow::TriangleWindow()
     , m_angleX(0)
     ,m_triangle(0)
     ,m_point(1)
+    ,m_distance(100.)
 {
 }
 
@@ -121,7 +125,8 @@ void TriangleWindow::render()
 
     QMatrix4x4 matrix;
     matrix.perspective(60.0f, 4.0f/3.0f, 0.1f, 10000.0f);
-    matrix.translate(0, 0, -100);
+
+    matrix.translate(0, 0, -m_distance);
 //    matrix.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
     matrix.rotate(m_angleX, 1, 0, 0);
     matrix.rotate(m_angleY, 0, 1, 0);
@@ -135,13 +140,13 @@ void TriangleWindow::render()
 
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        glEnable(GL_PROGRAM_POINT_SIZE);
+        //glEnable(GL_PROGRAM_POINT_SIZE);
 
         //int size = m_size * m_size * m_size;
         int size = m_size / 3;
         glDrawArrays(GL_POINTS, 0, size);
 
-        glDisable(GL_PROGRAM_POINT_SIZE);
+        //glDisable(GL_PROGRAM_POINT_SIZE);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(0);
     }
@@ -188,4 +193,9 @@ void TriangleWindow::keyPressEvent(QKeyEvent *event)
         this->destroy();
         break;
     }
+}
+
+void TriangleWindow::wheelEvent(QWheelEvent *event)
+{
+    m_distance *= 1.0 + (1.0 * event->delta() / 1200.0);
 }
