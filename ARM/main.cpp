@@ -59,8 +59,8 @@ TriangleWindow::TriangleWindow()
     , m_angleX(0)
     ,m_triangle(0)
     ,m_point(1)
-    ,m_distance(100.)
 {
+    m_distance = 100.;
 }
 
 int main(int argc, char **argv)
