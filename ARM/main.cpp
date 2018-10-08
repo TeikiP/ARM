@@ -25,6 +25,8 @@ protected:
 
     void keyPressEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
     GLuint m_posAttr;
@@ -47,6 +49,8 @@ private:
 
     bool m_triangle;
     bool m_point;
+
+    QPoint m_last_pos;
 };
 
 TriangleWindow::TriangleWindow()
@@ -198,4 +202,22 @@ void TriangleWindow::keyPressEvent(QKeyEvent *event)
 void TriangleWindow::wheelEvent(QWheelEvent *event)
 {
     m_distance *= 1.0 + (1.0 * event->delta() / 1200.0);
+}
+
+void TriangleWindow::mousePressEvent(QMouseEvent *event)
+{
+    m_last_pos = event->pos();
+}
+
+void TriangleWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    int dx = event->x() - m_last_pos.x();
+    int dy = event->y() - m_last_pos.y();
+
+    if (event->buttons() & Qt::LeftButton)
+    {
+          m_angleY += dx;
+          m_angleX += dy;
+    }
+    m_last_pos = event->pos();
 }
