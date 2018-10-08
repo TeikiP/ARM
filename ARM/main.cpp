@@ -32,11 +32,12 @@ private:
     GLuint m_posAttr;
     GLuint m_colAttr;
     GLuint m_matrixUniform;
-    //GLfloat *m_vertices;
     QVector<GLfloat> m_vertices;
-    //GLfloat *m_color;
+    QVector<GLfloat> m_vertices_triangles;
     QVector<GLfloat> m_colors;
+    QVector<GLfloat> m_colors_triangles;
     int m_size;
+    int m_size_triangles;
 
     QOpenGLShaderProgram *m_program;
     int m_frame;
@@ -57,8 +58,8 @@ TriangleWindow::TriangleWindow()
     : m_program(0)
     , m_frame(0)
     , m_angleX(0)
-    ,m_triangle(0)
-    ,m_point(1)
+    ,m_triangle(1)
+    ,m_point(0)
 {
     m_distance = 100.;
 }
@@ -76,8 +77,6 @@ int main(int argc, char **argv)
     window.show();
 
     window.setAnimating(true);
-
-
 
     return app.exec();
 }
@@ -111,11 +110,13 @@ void TriangleWindow::initialize()
     Vertices *vertex = new Vertices();
     vertex->readFile(PGM3D_PATH);
 
-    //m_size = vertex->getSize();
-    //m_vertices = vertex->func2();
     m_vertices = vertex->getLimitsCoords();
     m_colors = vertex->getLimitsColors();
     m_size = m_vertices.size();
+
+    m_vertices_triangles = vertex->getLimitsCoordsTriangles();
+    m_colors_triangles = vertex->getLimitsColorsTriangles();
+    m_size_triangles = m_vertices_triangles.size();
 }
 
 void TriangleWindow::render()
@@ -124,6 +125,8 @@ void TriangleWindow::render()
     glViewport(0, 0, width() * retinaScale, height() * retinaScale);
 
     glClear(GL_COLOR_BUFFER_BIT);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     m_program->bind();
 
@@ -131,7 +134,7 @@ void TriangleWindow::render()
     matrix.perspective(60.0f, 4.0f/3.0f, 0.1f, 10000.0f);
 
     matrix.translate(0, 0, -m_distance);
-//    matrix.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
+    //matrix.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
     matrix.rotate(m_angleX, 1, 0, 0);
     matrix.rotate(m_angleY, 0, 1, 0);
     matrix.rotate(m_angleZ, 0, 0, 1);
@@ -140,24 +143,28 @@ void TriangleWindow::render()
 
     if(m_point){
         glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, m_vertices.data());
-        glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, m_colors.data());
+        glVertexAttribPointer(m_colAttr, 4, GL_FLOAT, GL_FALSE, 0, m_colors.data());
 
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        //glEnable(GL_PROGRAM_POINT_SIZE);
 
-        //int size = m_size * m_size * m_size;
-        int size = m_size / 3;
-        glDrawArrays(GL_POINTS, 0, size);
+        glDrawArrays(GL_POINTS, 0, m_size / 3);
 
-        //glDisable(GL_PROGRAM_POINT_SIZE);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(0);
     }
+
     else if(m_triangle){
-        //TODO
-        cerr << "Render in mode GL_TRIANGLE is not yet implemented!" << endl;
-        throw ;
+        glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, m_vertices_triangles.data());
+        glVertexAttribPointer(m_colAttr, 4, GL_FLOAT, GL_FALSE, 0, m_colors_triangles.data());
+
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+
+        glDrawArrays(GL_TRIANGLES, 0, m_size_triangles / 3);
+
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(0);
     }
 
     m_program->release();

@@ -3,9 +3,7 @@
 #include <QFile>
 #include <QTextStream>
 
-#include <iostream>
-
-using namespace std;
+#define TRANSPARENCY_VALUE 0.3
 
 /* Console output global variable */
 QTextStream out(stdout);
@@ -192,406 +190,6 @@ void Vertices::readFile(const char* path)
     findLimitsIndices();
 }
 
-//not finish
-QVector<GLfloat> Vertices::func()
-{
-    QVector<GLfloat> vec(0);
-    unsigned int index = 0, indexTop = 0, indexBottom = 0, indexLeft = 0, indexRight = 0, indexFront = 0, indexBehind = 0;
-    unsigned int color = 0, colorTop = 0, colorBottom = 0, colorLeft = 0, colorRight = 0, colorFront = 0, colorBehind = 0;
-    bool add = false;
-
-    for (unsigned int z = 0; z < this->size; z++){
-        for (unsigned int x = 0; x < this->size; x++){
-            for (unsigned int y = 0; y < 3 * this->size; y += 3) {
-
-                add = false;
-                color = this->colors[index];
-
-                indexLeft = index - 3;
-                indexRight = index + 3;
-                indexTop = index - 3*size;
-                indexBottom = index + 3*size;
-                indexFront = index - 3*size*size;
-                indexBehind = index + 3*size*size;
-
-                if( z == 0 )
-                {
-                    if(x == 0 && y == 0 )
-                    {
-                        colorRight = this->colors[indexRight];
-                        colorBottom = this->colors[indexBottom];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorRight || color != colorBottom || color != colorBehind)
-                            add = true;
-                    }
-                    else if( x == this->size - 1 && y == 0 )
-                    {
-                        colorRight = this->colors[indexRight];
-                        colorTop = this->colors[indexTop];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorRight || color != colorTop || color != colorBehind)
-                            add = true;
-                    }
-                    else if( x == 0 && y == this->size - 1 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorBottom = this->colors[indexBottom];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorLeft || color != colorBottom || color != colorBehind)
-                            add = true;
-                    }
-                    else if( x == this->size - 1 && y == this->size - 1 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorTop = this->colors[indexTop];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorLeft || color != colorTop || color != colorBehind)
-                            add = true;
-                    }
-                    else if( y == 0 )
-                    {
-                        colorRight = this->colors[indexRight];
-                        colorTop = this->colors[indexTop];
-                        colorBottom = this->colors[indexBottom];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorRight || color != colorTop || color != colorBottom || color != colorBehind)
-                            add = true;
-                    }
-                    else if( y == this->size - 1 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorTop = this->colors[indexTop];
-                        colorBottom = this->colors[indexBottom];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorLeft || color != colorTop || color != colorBottom || color != colorBehind)
-                            add = true;
-                    }
-                    else if( x == 0 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorRight = this->colors[indexRight];
-                        colorBottom = this->colors[indexBottom];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorLeft || color != colorRight || color != colorBottom || color != colorBehind)
-                            add = true;
-                    }
-                    else if( x == this->size - 1 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorRight = this->colors[indexRight];
-                        colorTop = this->colors[indexTop];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorLeft || color != colorRight || color != colorTop || color != colorBehind)
-                            add = true;
-                    }
-                    else
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorRight = this->colors[indexRight];
-                        colorTop = this->colors[indexTop];
-                        colorBottom = this->colors[indexBottom];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorLeft || color != colorRight || color != colorTop || color != colorBottom || color != colorBehind)
-                            add = true;
-                    }
-                }
-
-                else if (z == this->size - 1)
-                {
-                    if(x == 0 && y == 0 )
-                    {
-                        colorRight = this->colors[indexRight];
-                        colorBottom = this->colors[indexBottom];
-                        colorFront = this->colors[indexFront];
-
-                        if(color != colorRight || color != colorBottom || color != colorFront)
-                            add = true;
-                    }
-                    else if( x == this->size - 1 && y == 0 )
-                    {
-                        colorRight = this->colors[indexRight];
-                        colorTop = this->colors[indexTop];
-                        colorFront = this->colors[indexFront];
-
-                        if(color != colorRight || color != colorTop || color != colorFront)
-                            add = true;
-                    }
-                    else if( x == 0 && y == this->size - 1 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorBottom = this->colors[indexBottom];
-                        colorFront = this->colors[indexFront];
-
-                        if(color != colorLeft || color != colorBottom || color != colorFront)
-                            add = true;
-                    }
-                    else if( x == this->size - 1 && y == this->size - 1 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorTop = this->colors[indexTop];
-                        colorFront = this->colors[indexFront];
-
-                        if(color != colorLeft || color != colorTop || color != colorFront)
-                            add = true;
-                    }
-                    else if( y == 0 )
-                    {
-                        colorRight = this->colors[indexRight];
-                        colorTop = this->colors[indexTop];
-                        colorBottom = this->colors[indexBottom];
-                        colorFront = this->colors[indexFront];
-
-                        if(color != colorRight || color != colorTop || color != colorBottom || color != colorFront)
-                            add = true;
-                    }
-                    else if( y == this->size - 1 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorTop = this->colors[indexTop];
-                        colorBottom = this->colors[indexBottom];
-                        colorFront = this->colors[indexFront];
-
-                        if(color != colorLeft || color != colorTop || color != colorBottom || color != colorFront)
-                            add = true;
-                    }
-                    else if( x == 0 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorRight = this->colors[indexRight];
-                        colorBottom = this->colors[indexBottom];
-                        colorFront = this->colors[indexFront];
-
-                        if(color != colorLeft || color != colorRight || color != colorBottom || color != colorFront)
-                            add = true;
-                    }
-                    else if( x == this->size - 1 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorRight = this->colors[indexRight];
-                        colorTop = this->colors[indexTop];
-                        colorFront = this->colors[indexFront];
-
-                        if(color != colorLeft || color != colorRight || color != colorTop || color != colorFront)
-                            add = true;
-                    }
-                    else
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorRight = this->colors[indexRight];
-                        colorTop = this->colors[indexTop];
-                        colorBottom = this->colors[indexBottom];
-                        colorFront = this->colors[indexFront];
-
-                        if(color != colorLeft || color != colorRight || color != colorTop || color != colorBottom || color != colorFront)
-                            add = true;
-                    }
-                }
-                else
-                {
-                    if(x == 0 && y == 0 )
-                    {
-                        colorRight = this->colors[indexRight];
-                        colorBottom = this->colors[indexBottom];
-                        colorFront = this->colors[indexFront];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorRight || color != colorBottom || color != colorFront || color != colorBehind)
-                            add = true;
-                    }
-                    else if( x == this->size - 1 && y == 0 )
-                    {
-                        colorRight = this->colors[indexRight];
-                        colorTop = this->colors[indexTop];
-                        colorFront = this->colors[indexFront];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorRight || color != colorTop || color != colorFront || color != colorBehind)
-                            add = true;
-                    }
-                    else if( x == 0 && y == this->size - 1 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorBottom = this->colors[indexBottom];
-                        colorFront = this->colors[indexFront];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorLeft || color != colorBottom || color != colorFront || color != colorBehind)
-                            add = true;
-                    }
-                    else if( x == this->size - 1 && y == this->size - 1 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorTop = this->colors[indexTop];
-                        colorFront = this->colors[indexFront];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorLeft || color != colorTop || color != colorFront || color != colorBehind)
-                            add = true;
-                    }
-                    else if( y == 0 )
-                    {
-                        colorRight = this->colors[indexRight];
-                        colorTop = this->colors[indexTop];
-                        colorBottom = this->colors[indexBottom];
-                        colorFront = this->colors[indexFront];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorRight || color != colorTop || color != colorBottom || color != colorFront || color != colorBehind)
-                            add = true;
-                    }
-                    else if( y == this->size - 1 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorTop = this->colors[indexTop];
-                        colorBottom = this->colors[indexBottom];
-                        colorFront = this->colors[indexFront];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorLeft || color != colorTop || color != colorBottom || color != colorFront || color != colorBehind)
-                            add = true;
-                    }
-                    else if( x == 0 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorRight = this->colors[indexRight];
-                        colorBottom = this->colors[indexBottom];
-                        colorFront = this->colors[indexFront];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorLeft || color != colorRight || color != colorBottom || color != colorFront || color != colorBehind)
-                            add = true;
-                    }
-                    else if( x == this->size - 1 )
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorRight = this->colors[indexRight];
-                        colorTop = this->colors[indexTop];
-                        colorFront = this->colors[indexFront];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorLeft || color != colorRight || color != colorTop || color != colorFront || color != colorBehind)
-                            add = true;
-                    }
-                    else
-                    {
-                        colorLeft = this->colors[indexLeft];
-                        colorRight = this->colors[indexRight];
-                        colorTop = this->colors[indexTop];
-                        colorBottom = this->colors[indexBottom];
-                        colorFront = this->colors[indexFront];
-                        colorBehind = this->colors[indexBehind];
-
-                        if(color != colorLeft || color != colorRight || color != colorTop || color != colorBottom || color != colorFront || color != colorBehind)
-                            add = true;
-                    }
-                }
-
-                if(add)
-                {
-                    vec.push_back(this->coords[index]);
-                    vec.push_back(this->coords[index+1]);
-                    vec.push_back(this->coords[index+2]);
-                }
-
-                index += 3;
-
-            }
-        }
-    }
-
-    return vec;
-}
-
-
-QVector<GLfloat> Vertices::func2()
-{
-    QVector<GLfloat> vec(0);
-    int index = 0, indexTop = 0, indexBottom = 0, indexLeft = 0, indexRight = 0, indexFront = 0, indexBehind = 0;
-    int color = 0, colorTop = 0, colorBottom = 0, colorLeft = 0, colorRight = 0, colorFront = 0, colorBehind = 0;
-
-    for (unsigned int z = 0; z < this->size; z++) {
-        for (unsigned int x = 0; x < this->size; x++) {
-            for (unsigned int y = 0; y < 3 * this->size; y += 3) {
-                // indices
-                indexLeft = index - 3;
-                indexRight = index + 3;
-                indexTop = index - 3*size;
-                indexBottom = index + 3*size;
-                indexFront = index - 3*size*size;
-                indexBehind = index + 3*size*size;
-
-                color = this->colors[index];
-
-                // left & right
-                if (indexLeft < 0) {
-                    colorLeft = color;
-                    colorRight = this->colors[indexRight];
-                }
-                else if (indexRight >= (int) this->size) {
-                    colorLeft = this->colors[indexLeft];
-                    colorRight = color;
-                }
-                else {
-                    colorLeft = this->colors[indexLeft];
-                    colorRight = this->colors[indexRight];
-                }
-
-                // top & bottom
-                if (indexTop < 0) {
-                    colorTop = color;
-                    colorBottom = this->colors[indexBottom];
-                }
-                else if (indexBottom >= (int) this->size) {
-                    colorTop = this->colors[indexTop];
-                    colorBottom = color;
-                }
-                else {
-                    colorTop = this->colors[indexTop];
-                    colorBottom = this->colors[indexBottom];
-                }
-
-                // front & behind
-                if (indexFront < 0) {
-                    colorFront = color;
-                    colorBehind = this->colors[indexBehind];
-                }
-                else if (indexBehind >= (int) this->size) {
-                    colorFront = this->colors[indexFront];
-                    colorBehind = color;
-                }
-                else {
-                    colorFront = this->colors[indexFront];
-                    colorBehind = this->colors[indexBehind];
-                }
-
-
-                // add coordinates of surfaces
-                if (    color != colorLeft  || color != colorRight  ||
-                        color != colorTop   || color != colorBottom ||
-                        color != colorFront || color != colorBehind ) {
-                    vec.push_back(this->coords[index]);
-                    vec.push_back(this->coords[index+1]);
-                    vec.push_back(this->coords[index+2]);
-                }
-
-                index += 3;
-
-            }
-        }
-    }
-
-    return vec;
-}
-
 void Vertices::findLimitsIndices()
 {
     QVector<int> limitsIndices(0);
@@ -680,6 +278,7 @@ QVector<GLfloat> Vertices::getLimitsCoords() {
     for (int i = 0; i < nb_vertices; i++)
         vec.push_back(this->coords[this->limitsIndices.at(i)]);
 
+
     return vec;
 }
 
@@ -687,11 +286,203 @@ QVector<GLfloat> Vertices::getLimitsColors() {
     QVector<GLfloat> vec(0);
 
     int nb_vertices = this->limitsIndices.size();
-    for (int i = 0; i < nb_vertices; i += 3) {
-        //vec.push_back(this->colors[this->limitsIndices.at(i)]);
-        vec.push_back(255);
-        vec.push_back(255);
-        vec.push_back(255);
+    for (int i = 0; i < nb_vertices; i++) {
+        vec.push_back(this->colors[this->limitsIndices.at(i)]);
+
+        if (i % 3 == 2)
+            vec.push_back(TRANSPARENCY_VALUE);
     }
+
     return vec;
+}
+
+
+QVector<GLfloat> Vertices::getLimitsCoordsTriangles() {
+    QVector<GLfloat> m_vertices_triangles(0);
+
+    QVector<GLfloat> m_vertices = getLimitsCoords();
+
+    int nb_vertices = this->limitsIndices.size();
+    for (int i=0; i<nb_vertices; i+=3) {
+        GLfloat x = m_vertices.at(i);
+        GLfloat y = m_vertices.at(i+1);
+        GLfloat z = m_vertices.at(i+2);
+
+        //UNDER 1
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z+1);
+
+        //UNDER 2
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z+1);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z+1);
+
+        //TOP 1
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z+1);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z);
+
+        //TOP 2
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z+1);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z+1);
+
+        //FRONT 1
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z);
+
+        //FRONT 2
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z);
+
+        //BACK 1
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z+1);
+
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z+1);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z+1);
+
+        //BACK 2
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z+1);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z+1);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z+1);
+
+        //LEFT 1
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z+1);
+
+        //LEFT 2
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z+1);
+
+        m_vertices_triangles.push_back(x);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z+1);
+
+        //RIGHT 1
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z+1);
+
+        //RIGHT 2
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y);
+        m_vertices_triangles.push_back(z+1);
+
+        m_vertices_triangles.push_back(x+1);
+        m_vertices_triangles.push_back(y+1);
+        m_vertices_triangles.push_back(z+1);
+    }
+
+    return m_vertices_triangles;
+}
+
+//TODO: Fix and use actual colors instead of placeholder
+QVector<GLfloat> Vertices::getLimitsColorsTriangles() {
+    QVector<GLfloat> m_colors_triangles(0);
+
+    int nb_vertices = this->limitsIndices.size();
+    for (int i=0; i<nb_vertices; i+=3) { // for every voxel
+        for (int j=0; j<12; j++) { // for every triangle of the cube around the voxel
+            for (int k=0; k<3; k++) { // for every vertice of the triangle
+                m_colors_triangles.push_back(255);
+                m_colors_triangles.push_back(255);
+                m_colors_triangles.push_back(255);
+                m_colors_triangles.push_back(.05);
+            }
+        }
+    }
+
+    return m_colors_triangles;
 }

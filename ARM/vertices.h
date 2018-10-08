@@ -30,12 +30,11 @@ public:
 
     void readFile(const char* path);
 
-    QVector<GLfloat> func();
-    QVector<GLfloat> func2();
-
     void findLimitsIndices();
     QVector<GLfloat> getLimitsCoords();
     QVector<GLfloat> getLimitsColors();
+    QVector<GLfloat> getLimitsCoordsTriangles();
+    QVector<GLfloat> getLimitsColorsTriangles();
 };
 
 #endif // VERTICES_H
