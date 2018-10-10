@@ -30,19 +30,16 @@ private:
 
     int m_size;
     int m_size_triangles;
-    int m_frame;
 
     //Rotation
     int m_angleX;
     int m_angleY;
-    int m_angleZ;
 
     //Translation
-    int m_translateX;
-    int m_translateY;
-    int m_translateZ;
+    float m_translateX;
+    float m_translateY;
+    float m_translateZ;
 
-    float m_distance;
 
     //Renderer Mode
     bool m_triangle;

@@ -32,12 +32,10 @@ static const char *fragmentShaderSource =
 
 DisplayWindow::DisplayWindow()
     : m_program(0)
-    , m_frame(0)
-    , m_angleX(0)
     ,m_triangle(1)
     ,m_point(0)
 {
-    m_distance = 100.;
+    m_translateZ = 100.;
 }
 
 
@@ -77,10 +75,10 @@ void DisplayWindow::render()
     QMatrix4x4 matrix;
     matrix.perspective(60.0f, 4.0f/3.0f, 0.1f, 10000.0f);
 
-    matrix.translate(0, 0, -m_distance);
+    matrix.translate(m_translateX, m_translateY, -m_translateZ);
     matrix.rotate(m_angleX, 1, 0, 0);
     matrix.rotate(m_angleY, 0, 1, 0);
-    matrix.rotate(m_angleZ, 0, 0, 1);
+
 
     m_program->setUniformValue(m_matrixUniform, matrix);
 
@@ -112,10 +110,13 @@ void DisplayWindow::render()
 
     m_program->release();
 
-    ++m_frame;
 }
 
-
+//    else if(event->buttons() & Qt::RightButton)
+//    {
+//        m_translateY += dy;
+//        m_translateX += dx;
+//
 void DisplayWindow::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
@@ -151,7 +152,7 @@ void DisplayWindow::keyPressEvent(QKeyEvent *event)
 
 void DisplayWindow::wheelEvent(QWheelEvent *event)
 {
-    m_distance *= 1.0 + (-1.0 * event->delta() / 1200.0);
+    m_translateZ *= 1.0 + (-1.0 * event->delta() / 1200.0);
 }
 
 void DisplayWindow::mousePressEvent(QMouseEvent *event)
@@ -169,5 +170,11 @@ void DisplayWindow::mouseMoveEvent(QMouseEvent *event)
           m_angleY += dx;
           m_angleX += dy;
     }
+    else if(event->buttons() & Qt::RightButton)
+    {
+        m_translateY -= dy;
+        m_translateX += dx;
+    }
+
     m_last_pos = event->pos();
 }
