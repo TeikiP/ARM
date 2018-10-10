@@ -125,6 +125,8 @@ void Vertices::readFile(const QString path)
     else if(path.endsWith(".pgm3d"))
         this->readFilePgm3d(path);
 
+    else
+        out << "Incorrect file format!" << endl;
 
 }
 
