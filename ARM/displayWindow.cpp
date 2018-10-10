@@ -34,6 +34,8 @@ DisplayWindow::DisplayWindow()
     : m_program(0)
     ,m_triangle(1)
     ,m_point(0)
+    ,m_angleX(0)
+    ,m_angleY(0)
 {
     m_translateZ = 100.;
 }
