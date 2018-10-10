@@ -7,6 +7,10 @@
 class Vertices
 {
 private:
+
+    void readFileObj(const QString path);
+    void readFilePgm3d(const QString path);
+
     GLfloat *coords;
     GLfloat *colors;
     QVector<int> limitsIndices;

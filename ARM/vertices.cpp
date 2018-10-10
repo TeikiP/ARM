@@ -118,6 +118,18 @@ unsigned int Vertices::getSize()
    argument and creates the corresponding vertices. */
 void Vertices::readFile(const QString path)
 {
+
+    if(path.endsWith(".obj"))
+        this->readFileObj(path);
+
+    else if(path.endsWith(".pgm3d"))
+        this->readFilePgm3d(path);
+
+
+}
+
+void Vertices::readFilePgm3d(const QString path){
+
     // Opening the file
     QFile file(path);
 
@@ -187,6 +199,18 @@ void Vertices::readFile(const QString path)
 
     // Determine edges of volumes
     findLimitsIndices();
+}
+
+void Vertices::readFileObj(const QString path){
+
+    // Opening the file
+    QFile file(path);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        out << "Error reading from file!" << endl;
+        return;
+    }
+    // TODO
 }
 
 void Vertices::findLimitsIndices()
