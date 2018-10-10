@@ -107,15 +107,15 @@ void TriangleWindow::initialize()
     m_colAttr = m_program->attributeLocation("colAttr");
     m_matrixUniform = m_program->uniformLocation("matrix");
 
-    Vertices *vertex = new Vertices();
-    vertex->readFile(PGM3D_PATH);
+    Vertices vertex;
+    vertex.readFile(PGM3D_PATH);
 
-    m_vertices = vertex->getLimitsCoords();
-    m_colors = vertex->getLimitsColors();
+    m_vertices = vertex.getLimitsCoords();
+    m_colors = vertex.getLimitsColors();
     m_size = m_vertices.size();
 
-    m_vertices_triangles = vertex->getLimitsCoordsTriangles();
-    m_colors_triangles = vertex->getLimitsColorsTriangles();
+    m_vertices_triangles = vertex.getLimitsCoordsTriangles();
+    m_colors_triangles = vertex.getLimitsColorsTriangles();
     m_size_triangles = m_vertices_triangles.size();
 }
 
@@ -161,7 +161,7 @@ void TriangleWindow::render()
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
 
-        glDrawArrays(GL_TRIANGLES, 0, m_size_triangles / 3);
+        glDrawArrays(GL_TRIANGLES+, 0, m_size_triangles / 3);
 
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(0);
