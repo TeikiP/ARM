@@ -173,7 +173,6 @@ void Vertices::readFile(const char* path)
                     out << "Invalid color value in PGM3D file." << endl;
 
                 // Set values
-                //this->setCoordsAt(index, this->size - x - 1, y, z); // this->size - x - 1 => image in place and bottom left image = center of rendering
                 this->setCoordsAt(index, x - offSet, y - offSet, z - offSet);
                 this->setColorAt(index, value); //Correct modelisation
                 //this->setCustomColorAt(index, value); //Demo and testing modelisation
@@ -476,9 +475,9 @@ QVector<GLfloat> Vertices::getLimitsColorsTriangles() {
     for (int i=0; i<nb_vertices; i+=3) { // for every voxel
         for (int j=0; j<12; j++) { // for every triangle of the cube around the voxel
             for (int k=0; k<3; k++) { // for every vertice of the triangle
-                m_colors_triangles.push_back(255);
-                m_colors_triangles.push_back(255);
-                m_colors_triangles.push_back(255);
+                m_colors_triangles.push_back(this->colors[this->limitsIndices[i]]/255.0);
+                m_colors_triangles.push_back(this->colors[this->limitsIndices[i+1]]/255.0);
+                m_colors_triangles.push_back(this->colors[this->limitsIndices[i+2]]/255.0);
                 m_colors_triangles.push_back(.05);
             }
         }
