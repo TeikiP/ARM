@@ -4,7 +4,7 @@
 #include <QtGui/QMatrix4x4>
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QScreen>
-
+#include <QFileDialog>
 #include <QtCore/qmath.h>
 
 #include <iostream>
@@ -49,8 +49,10 @@ void DisplayWindow::initialize()
     m_colAttr = m_program->attributeLocation("colAttr");
     m_matrixUniform = m_program->uniformLocation("matrix");
 
+    QString filename = QFileDialog::getOpenFileName(0, tr("Open File"), ".", tr("Files (*.pgm3d *.obj)"));
+
     Vertices vertex;
-    vertex.readFile(PGM3D_PATH);
+    vertex.readFile(filename);
 
     m_vertices = vertex.getLimitsCoords();
     m_colors = vertex.getLimitsColors();
@@ -112,11 +114,6 @@ void DisplayWindow::render()
 
 }
 
-//    else if(event->buttons() & Qt::RightButton)
-//    {
-//        m_translateY += dy;
-//        m_translateX += dx;
-//
 void DisplayWindow::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
@@ -143,6 +140,9 @@ void DisplayWindow::keyPressEvent(QKeyEvent *event)
     case Qt::Key_P :
         m_triangle = false;
         m_point = true;
+        break;
+    case Qt::Key_L :
+        this->initialize();
         break;
     case Qt::Key_Escape :
         this->destroy();

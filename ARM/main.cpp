@@ -1,9 +1,9 @@
 #include "displayWindow.h"
-
+#include <QApplication>
 
 int main(int argc, char **argv)
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     QSurfaceFormat format;
     format.setSamples(16);

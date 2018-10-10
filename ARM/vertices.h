@@ -28,7 +28,7 @@ public:
 
     unsigned int getSize();
 
-    void readFile(const char* path);
+    void readFile(const QString path);
 
     void findLimitsIndices();
     QVector<GLfloat> getLimitsCoords();

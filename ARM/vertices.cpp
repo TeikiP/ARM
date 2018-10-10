@@ -116,7 +116,7 @@ unsigned int Vertices::getSize()
 
 /* Reads all the necessary information from a file whose path is given as an
    argument and creates the corresponding vertices. */
-void Vertices::readFile(const char* path)
+void Vertices::readFile(const QString path)
 {
     // Opening the file
     QFile file(path);
