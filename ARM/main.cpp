@@ -143,7 +143,7 @@ void TriangleWindow::render()
 
     if(m_point){
         glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, m_vertices.data());
-        glVertexAttribPointer(m_colAttr, 4, GL_FLOAT, GL_FALSE, 0, m_colors.data());
+        glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, m_colors.data());
 
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -208,7 +208,7 @@ void TriangleWindow::keyPressEvent(QKeyEvent *event)
 
 void TriangleWindow::wheelEvent(QWheelEvent *event)
 {
-    m_distance *= 1.0 + (1.0 * event->delta() / 1200.0);
+    m_distance *= 1.0 + (-1.0 * event->delta() / 1200.0);
 }
 
 void TriangleWindow::mousePressEvent(QMouseEvent *event)

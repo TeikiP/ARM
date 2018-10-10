@@ -3,7 +3,7 @@
 #include <QFile>
 #include <QTextStream>
 
-#define TRANSPARENCY_VALUE 0.3
+#define TRANSPARENCY_VALUE 0.05
 
 /* Console output global variable */
 QTextStream out(stdout);
@@ -285,12 +285,8 @@ QVector<GLfloat> Vertices::getLimitsColors() {
     QVector<GLfloat> vec(0);
 
     int nb_vertices = this->limitsIndices.size();
-    for (int i = 0; i < nb_vertices; i++) {
-        vec.push_back(this->colors[this->limitsIndices.at(i)]);
-
-        if (i % 3 == 2)
-            vec.push_back(TRANSPARENCY_VALUE);
-    }
+    for (int i = 0; i < nb_vertices; i++)
+        vec.push_back(1);
 
     return vec;
 }
@@ -478,7 +474,7 @@ QVector<GLfloat> Vertices::getLimitsColorsTriangles() {
                 m_colors_triangles.push_back(this->colors[this->limitsIndices[i]]/255.0);
                 m_colors_triangles.push_back(this->colors[this->limitsIndices[i+1]]/255.0);
                 m_colors_triangles.push_back(this->colors[this->limitsIndices[i+2]]/255.0);
-                m_colors_triangles.push_back(.05);
+                m_colors_triangles.push_back(TRANSPARENCY_VALUE);
             }
         }
     }
