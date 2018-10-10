@@ -13,10 +13,13 @@ TARGET = ARM
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
+SOURCES += \
+    main.cpp \
     vertices.cpp \
-    openglwindow.cpp
+    openglwindow.cpp \
+    displayWindow.cpp
 
 HEADERS  += \
     vertices.h \
-    openglwindow.h
+    openglwindow.h\
+    displayWindow.h
