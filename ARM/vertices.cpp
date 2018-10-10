@@ -212,7 +212,7 @@ void Vertices::readFileObj(const QString path){
         out << "Error reading from file!" << endl;
         return;
     }
-    // TODO
+    // TODO obj
 }
 
 void Vertices::findLimitsIndices()
