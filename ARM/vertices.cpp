@@ -3,7 +3,7 @@
 #include <QFile>
 #include <QTextStream>
 
-#define TRANSPARENCY_VALUE 0.05
+#define TRANSPARENCY_VALUE 0.3
 
 /* Console output global variable */
 QTextStream out(stdout);
@@ -78,6 +78,11 @@ void Vertices::setCustomColorAt(unsigned int index, float value)
         colors[index + 1] = value;
         colors[index + 2] = value;
     }
+}
+
+GLfloat Vertices::getColorAt(int x, int y, int z)
+{
+    return colors[((x+32)*this->size*this->size + (y+32)*this->size + (z+32))*3];
 }
 
 GLfloat Vertices::getColorAt(unsigned int index)
@@ -317,7 +322,6 @@ QVector<GLfloat> Vertices::getLimitsColors() {
     return vec;
 }
 
-
 QVector<GLfloat> Vertices::getLimitsCoordsTriangles() {
     QVector<GLfloat> m_vertices_triangles(0);
 
@@ -489,7 +493,6 @@ QVector<GLfloat> Vertices::getLimitsCoordsTriangles() {
     return m_vertices_triangles;
 }
 
-//TODO: Fix and use actual colors instead of placeholder
 QVector<GLfloat> Vertices::getLimitsColorsTriangles() {
     QVector<GLfloat> m_colors_triangles(0);
 
@@ -497,12 +500,252 @@ QVector<GLfloat> Vertices::getLimitsColorsTriangles() {
     for (int i=0; i<nb_vertices; i+=3) { // for every voxel
         for (int j=0; j<12; j++) { // for every triangle of the cube around the voxel
             for (int k=0; k<3; k++) { // for every vertice of the triangle
-//                m_colors_triangles.push_back(this->colors[this->limitsIndices[i]]/255.0);
-//                m_colors_triangles.push_back(this->colors[this->limitsIndices[i+1]]/255.0);
-//                m_colors_triangles.push_back(this->colors[this->limitsIndices[i+2]]/255.0);
+                m_colors_triangles.push_back(this->colors[this->limitsIndices[i]]/255.0);
+                m_colors_triangles.push_back(this->colors[this->limitsIndices[i+1]]/255.0);
+                m_colors_triangles.push_back(this->colors[this->limitsIndices[i+2]]/255.0);
+                /*m_colors_triangles.push_back(255.0);
                 m_colors_triangles.push_back(255.0);
+                m_colors_triangles.push_back(255.0);*/
+                m_colors_triangles.push_back(0.05);
+            }
+        }
+    }
+
+    return m_colors_triangles;
+}
+
+QVector<GLfloat> Vertices::getLimitsCoordsCubes() {
+    QVector<GLfloat> m_vertices_triangles(0);
+
+    QVector<GLfloat> m_vertices = getLimitsCoords();
+
+    int nb_vertices = this->limitsIndices.size();
+    for (int i=0; i<nb_vertices; i+=3) {
+        GLfloat x = m_vertices.at(i);
+        GLfloat y = m_vertices.at(i+1);
+        GLfloat z = m_vertices.at(i+2);
+
+        GLfloat colorInd = getColorAt(x, y, z);
+
+        GLfloat colorRight = getColorAt(x+1, y, z);
+        GLfloat colorLeft = getColorAt(x-1, y, z);
+
+        GLfloat colorTop = getColorAt(x, y+1, z);
+        GLfloat colorBottom = getColorAt(x, y-1, z);
+
+        GLfloat colorFront = getColorAt(x, y, z+1);
+        GLfloat colorBack = getColorAt(x, y, z-1);
+
+        if (colorInd != colorBottom) {
+            //UNDER 1
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z+1);
+
+            //UNDER 2
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z+1);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z+1);
+        }
+
+        if (colorInd != colorTop) {
+            //TOP 1
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z+1);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z);
+
+            //TOP 2
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z+1);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z+1);
+        }
+
+        if (colorInd != colorFront) {
+            //FRONT 1
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z);
+
+            //FRONT 2
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z);
+        }
+
+        if (colorInd != colorBack) {
+            //BACK 1
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z+1);
+
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z+1);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z+1);
+
+            //BACK 2
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z+1);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z+1);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z+1);
+        }
+
+        if (colorInd != colorLeft) {
+            //LEFT 1
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z+1);
+
+            //LEFT 2
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z+1);
+
+            m_vertices_triangles.push_back(x);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z+1);
+        }
+
+        if (colorInd != colorRight) {
+            //RIGHT 1
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z+1);
+
+            //RIGHT 2
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y);
+            m_vertices_triangles.push_back(z+1);
+
+            m_vertices_triangles.push_back(x+1);
+            m_vertices_triangles.push_back(y+1);
+            m_vertices_triangles.push_back(z+1);
+        }
+    }
+
+    return m_vertices_triangles;
+}
+
+QVector<GLfloat> Vertices::getLimitsColorsCubes() {
+    QVector<GLfloat> m_colors_triangles(0);
+
+    int nb_vertices = this->limitsIndices.size();
+    QVector<GLfloat> m_vertices = getLimitsCoords();
+
+    for (int i=0; i<nb_vertices; i+=3) { // for every voxel
+        GLfloat x = m_vertices.at(i);
+        GLfloat y = m_vertices.at(i+1);
+        GLfloat z = m_vertices.at(i+2);
+
+        GLfloat colorInd = getColorAt(x, y, z);
+
+        int nb_faces = 0;
+
+        if (colorInd != getColorAt(x+1, y, z))
+            nb_faces++;
+        if (colorInd != getColorAt(x-1, y, z))
+            nb_faces++;
+
+        if (colorInd != getColorAt(x, y+1, z))
+            nb_faces++;
+        if (colorInd != getColorAt(x, y-1, z))
+            nb_faces++;
+
+        if (colorInd != getColorAt(x, y, z+1))
+            nb_faces++;
+        if (colorInd != getColorAt(x, y, z-1))
+            nb_faces++;
+
+        for (int j=0; j<2*nb_faces; j++) { // for every triangle of the cube around the voxel
+            for (int k=0; k<3; k++) { // for every vertice of the triangle
+                m_colors_triangles.push_back(this->colors[this->limitsIndices[i]]/255.0);
+                m_colors_triangles.push_back(this->colors[this->limitsIndices[i+1]]/255.0);
+                m_colors_triangles.push_back(this->colors[this->limitsIndices[i+2]]/255.0);
+                /*m_colors_triangles.push_back(255.0);
                 m_colors_triangles.push_back(255.0);
-                m_colors_triangles.push_back(255.0);
+                m_colors_triangles.push_back(255.0);*/
                 m_colors_triangles.push_back(TRANSPARENCY_VALUE);
             }
         }

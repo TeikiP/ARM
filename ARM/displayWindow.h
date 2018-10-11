@@ -23,13 +23,18 @@ private:
 
     QVector<GLfloat> m_vertices;
     QVector<GLfloat> m_vertices_triangles;
+    QVector<GLfloat> m_vertices_cubes;
+
     QVector<GLfloat> m_colors;
     QVector<GLfloat> m_colors_triangles;
-
-    QOpenGLShaderProgram *m_program;
+    QVector<GLfloat> m_colors_cubes;
 
     int m_size;
     int m_size_triangles;
+    int m_size_cubes;
+
+    QOpenGLShaderProgram *m_program;
+
 
     //Rotation
     int m_angleX;
@@ -44,6 +49,7 @@ private:
     //Renderer Mode
     bool m_triangle;
     bool m_point;
+    bool m_cube;
 
     //Interaction event
     QPoint m_last_pos;

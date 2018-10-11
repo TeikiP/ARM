@@ -23,6 +23,7 @@ public:
 
     void setColorAt(unsigned int index, float value);
     void setCustomColorAt(unsigned int index, float value);
+    GLfloat getColorAt(int x, int y, int z);
     GLfloat getColorAt(unsigned int index);
     GLfloat* getColors();
 
@@ -39,6 +40,8 @@ public:
     QVector<GLfloat> getLimitsColors();
     QVector<GLfloat> getLimitsCoordsTriangles();
     QVector<GLfloat> getLimitsColorsTriangles();
+    QVector<GLfloat> getLimitsCoordsCubes();
+    QVector<GLfloat> getLimitsColorsCubes();
 };
 
 #endif // VERTICES_H

@@ -34,8 +34,9 @@ DisplayWindow::DisplayWindow()
     : m_program(0)
     ,m_angleX(0)
     ,m_angleY(0)
-    ,m_triangle(1)
+    ,m_triangle(0)
     ,m_point(0)
+    ,m_cube(1)
 {
     m_translateZ = 100.;
 }
@@ -51,7 +52,8 @@ void DisplayWindow::initialize()
     m_colAttr = m_program->attributeLocation("colAttr");
     m_matrixUniform = m_program->uniformLocation("matrix");
 
-    QString filename = QFileDialog::getOpenFileName(0, tr("Open File"), ".", tr("Files (*.pgm3d *.obj)"));
+    //QString filename = QFileDialog::getOpenFileName(0, tr("Open File"), ".", tr("Files (*.pgm3d *.obj)"));
+    QString filename = PGM3D_PATH;
 
     Vertices vertex;
     vertex.readFile(filename);
@@ -63,6 +65,10 @@ void DisplayWindow::initialize()
     m_vertices_triangles = vertex.getLimitsCoordsTriangles();
     m_colors_triangles = vertex.getLimitsColorsTriangles();
     m_size_triangles = m_vertices_triangles.size();
+
+    m_vertices_cubes = vertex.getLimitsCoordsCubes();
+    m_colors_cubes = vertex.getLimitsColorsCubes();
+    m_size_cubes = m_vertices_cubes.size();
 }
 
 void DisplayWindow::render()
@@ -112,6 +118,20 @@ void DisplayWindow::render()
         glDisableVertexAttribArray(0);
     }
 
+    else if(m_cube){
+        glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, m_vertices_cubes.data());
+        glVertexAttribPointer(m_colAttr, 4, GL_FLOAT, GL_FALSE, 0, m_colors_cubes.data());
+
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+
+        glDrawArrays(GL_TRIANGLES, 0, m_size_cubes / 3);
+
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(0);
+    }
+
+
     m_program->release();
 
 }
@@ -119,36 +139,51 @@ void DisplayWindow::render()
 void DisplayWindow::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_Up :
-        m_angleX += 1;
-        m_angleX %= 360;
-        break;
-    case Qt::Key_Down :
-        m_angleX -= 1;
-        m_angleX %= 360;
-        break;
-    case Qt::Key_Left :
-        m_angleY -= 1;
-        m_angleY %= 360;
-        break;
-    case Qt::Key_Right :
-        m_angleY += 1;
-        m_angleY %= 360;
-        break;
-    case Qt::Key_T :
-        m_triangle = true;
-        m_point = false;
-        break;
-    case Qt::Key_P :
-        m_triangle = false;
-        m_point = true;
-        break;
-    case Qt::Key_L :
-        this->initialize();
-        break;
-    case Qt::Key_Escape :
-        this->destroy();
-        break;
+        case Qt::Key_Up :
+            m_angleX += 1;
+            m_angleX %= 360;
+            break;
+
+        case Qt::Key_Down :
+            m_angleX -= 1;
+            m_angleX %= 360;
+            break;
+
+        case Qt::Key_Left :
+            m_angleY -= 1;
+            m_angleY %= 360;
+            break;
+
+        case Qt::Key_Right :
+            m_angleY += 1;
+            m_angleY %= 360;
+            break;
+
+        case Qt::Key_T :
+            m_triangle = true;
+            m_point = false;
+            m_cube = false;
+            break;
+
+        case Qt::Key_P :
+            m_triangle = false;
+            m_point = true;
+            m_cube = false;
+            break;
+
+        case Qt::Key_C :
+            m_triangle = false;
+            m_point = false;
+            m_cube = true;
+            break;
+
+        case Qt::Key_L :
+            this->initialize();
+            break;
+
+        case Qt::Key_Escape :
+            this->destroy();
+            break;
     }
 }
 
