@@ -15,15 +15,15 @@ TEMPLATE = app
 
 SOURCES += \
     main.cpp \
-    vertices.cpp \
     openglwindow.cpp \
     displayWindow.cpp \
     tinyobjloader/tiny_obj_loader.cc \
-    obj.cpp
+    obj.cpp \
+    pgm3d.cpp
 
 HEADERS  += \
-    vertices.h \
     openglwindow.h\
     displayWindow.h \
     tinyobjloader/tiny_obj_loader.h \
-    obj.h
+    obj.h \
+    pgm3d.h
