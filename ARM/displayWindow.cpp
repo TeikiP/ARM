@@ -30,6 +30,8 @@ DisplayWindow::DisplayWindow()
 
 void DisplayWindow::initialize()
 {
+    m_translateX = m_translateY = m_angleX = m_angleY = 0;
+    m_translateZ = 100.;
     m_program = new QOpenGLShaderProgram(this);
     m_program->addShaderFromSourceFile(QOpenGLShader::Vertex, VERTEX_SHADER_PATH);
     m_program->addShaderFromSourceFile(QOpenGLShader::Fragment, FRAGMENT_SHADER_PATH);
@@ -42,19 +44,18 @@ void DisplayWindow::initialize()
 
 
     if (filename.endsWith(".pgm3d")) {
-        Vertices vertex;
-        vertex.readFile(filename);
+        Pgm3d pgm3d = Pgm3d(filename);
 
-        m_vertices = vertex.getLimitsCoords();
-        m_colors = vertex.getLimitsColors();
+        m_vertices = pgm3d.getLimitsCoords();
+        m_colors = pgm3d.getLimitsColors();
         m_size = m_vertices.size();
 
-        m_vertices_triangles = vertex.getLimitsCoordsTriangles();
-        m_colors_triangles = vertex.getLimitsColorsTriangles();
+        m_vertices_triangles = pgm3d.getLimitsCoordsTriangles();
+        m_colors_triangles = pgm3d.getLimitsColorsTriangles();
         m_size_triangles = m_vertices_triangles.size();
 
-        m_vertices_cubes = vertex.getLimitsCoordsCubes();
-        m_colors_cubes = vertex.getLimitsColorsCubes();
+        m_vertices_cubes = pgm3d.getLimitsCoordsCubes();
+        m_colors_cubes = pgm3d.getLimitsColorsCubes();
         m_size_cubes = m_vertices_cubes.size();
     }
 

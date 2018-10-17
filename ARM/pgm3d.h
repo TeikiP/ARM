@@ -1,15 +1,14 @@
-#ifndef VERTICES_H
-#define VERTICES_H
+#ifndef PGM3D_H
+#define PGM3D_H
 
 #include <QtGui>
 #include <QVector>
 
-class Vertices
+class Pgm3d
 {
 private:
 
-    void readFileObj(const QString path);
-    void readFilePgm3d(const QString path);
+    void findLimitsIndices();
 
     GLfloat *coords;
     GLfloat *colors;
@@ -17,9 +16,10 @@ private:
     unsigned int size;
 
 public:
-    Vertices();
-    Vertices(int size);
-    ~Vertices();
+    Pgm3d();
+    Pgm3d(int size);
+    Pgm3d(const QString size);
+    ~Pgm3d();
 
     void setColorAt(unsigned int index, float value);
     void setCustomColorAt(unsigned int index, float value);
@@ -35,7 +35,7 @@ public:
 
     void readFile(const QString path);
 
-    void findLimitsIndices();
+
     QVector<GLfloat> getLimitsCoords();
     QVector<GLfloat> getLimitsColors();
     QVector<GLfloat> getLimitsCoordsTriangles();
@@ -44,4 +44,4 @@ public:
     QVector<GLfloat> getLimitsColorsCubes();
 };
 
-#endif // VERTICES_H
+#endif // PGM3D_H

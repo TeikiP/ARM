@@ -30,7 +30,7 @@ Obj::Obj(QString filename)
         size_t index_offset = 0;
 
         for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
-            int fv = shapes[s].mesh.num_face_vertices[f];
+            unsigned int fv = shapes[s].mesh.num_face_vertices[f];
 
             // Loop over vertices in the face.
             if (fv == 3) { // If the face is a triangle
@@ -125,7 +125,7 @@ Obj::Obj(QString filename)
             }
 
             else {
-                std::cout << fv << "-vertices faces not supported." << endl;
+                std::cout << fv << "-vertices faces not supported." << std::endl;
                 exit(1);
             }
         }

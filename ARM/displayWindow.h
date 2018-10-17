@@ -1,5 +1,5 @@
 #include "openglwindow.h"
-#include "vertices.h"
+#include "pgm3d.h"
 
 class DisplayWindow : public OpenGLWindow
 {

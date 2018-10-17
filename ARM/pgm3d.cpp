@@ -1,4 +1,4 @@
-#include "vertices.h"
+#include "pgm3d.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -11,7 +11,7 @@ QTextStream out(stdout);
 /*********************CONSTRUCTORS & DESTRUCTORS*******************************/
 
 /* Default constructor */
-Vertices::Vertices()
+Pgm3d::Pgm3d()
 {
     this->coords = NULL;
     this->colors = NULL;
@@ -19,15 +19,24 @@ Vertices::Vertices()
 }
 
 /* Constructor with known size */
-Vertices::Vertices(int size)
+Pgm3d::Pgm3d(int size)
 {
     this->coords = new GLfloat[size * size * size * 3]();
     this->colors = new GLfloat[size * size * size * 3]();
     this->size = size;
 }
 
+/* Constructor with file */
+Pgm3d::Pgm3d(const QString path)
+{
+    this->coords = NULL;
+    this->colors = NULL;
+    this->size = 0;
+
+    this->readFile(path);
+}
 /* Destructor */
-Vertices::~Vertices()
+Pgm3d::~Pgm3d()
 {
     delete [] coords;
     delete [] colors;
@@ -35,14 +44,14 @@ Vertices::~Vertices()
 
 /*************************GETTERS & SETTERS************************************/
 
-void Vertices::setColorAt(unsigned int index, float value)
+void Pgm3d::setColorAt(unsigned int index, float value)
 {
     colors[index] = value;
     colors[index + 1] = value;
     colors[index + 2] = value;
 }
 
-void Vertices::setCustomColorAt(unsigned int index, float value)
+void Pgm3d::setCustomColorAt(unsigned int index, float value)
 {
     // WHITE -> RED
     if (value == 255) {
@@ -80,39 +89,39 @@ void Vertices::setCustomColorAt(unsigned int index, float value)
     }
 }
 
-GLfloat Vertices::getColorAt(int x, int y, int z)
+GLfloat Pgm3d::getColorAt(int x, int y, int z)
 {
     return colors[((x+32)*this->size*this->size + (y+32)*this->size + (z+32))*3];
 }
 
-GLfloat Vertices::getColorAt(unsigned int index)
+GLfloat Pgm3d::getColorAt(unsigned int index)
 {
     return colors[index];
 }
 
-GLfloat* Vertices::getColors()
+GLfloat* Pgm3d::getColors()
 {
     return colors;
 }
 
-void Vertices::setCoordsAt(unsigned int index, int x, int y, int z)
+void Pgm3d::setCoordsAt(unsigned int index, int x, int y, int z)
 {
     coords[index] = x;
     coords[index + 1] = y;
     coords[index + 2] = z;
 }
 
-GLfloat Vertices::getCoordsAt(unsigned int index)
+GLfloat Pgm3d::getCoordsAt(unsigned int index)
 {
     return coords[index];
 }
 
-GLfloat* Vertices::getCoords()
+GLfloat* Pgm3d::getCoords()
 {
     return coords;
 }
 
-unsigned int Vertices::getSize()
+unsigned int Pgm3d::getSize()
 {
     return size;
 }
@@ -121,22 +130,8 @@ unsigned int Vertices::getSize()
 
 /* Reads all the necessary information from a file whose path is given as an
    argument and creates the corresponding vertices. */
-void Vertices::readFile(const QString path)
+void Pgm3d::readFile(const QString path)
 {
-
-    if(path.endsWith(".obj"))
-        this->readFileObj(path);
-
-    else if(path.endsWith(".pgm3d"))
-        this->readFilePgm3d(path);
-
-    else
-        out << "Incorrect file format!" << endl;
-
-}
-
-void Vertices::readFilePgm3d(const QString path){
-
     // Opening the file
     QFile file(path);
 
@@ -208,19 +203,7 @@ void Vertices::readFilePgm3d(const QString path){
     findLimitsIndices();
 }
 
-void Vertices::readFileObj(const QString path){
-
-    // Opening the file
-    QFile file(path);
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        out << "Error reading from file!" << endl;
-        return;
-    }
-    // TODO
-}
-
-void Vertices::findLimitsIndices()
+void Pgm3d::findLimitsIndices()
 {
     QVector<int> limitsIndices(0);
     int index = 0, indexTop = 0, indexBottom = 0, indexLeft = 0, indexRight = 0, indexFront = 0, indexBehind = 0;
@@ -301,7 +284,7 @@ void Vertices::findLimitsIndices()
 }
 
 
-QVector<GLfloat> Vertices::getLimitsCoords() {
+QVector<GLfloat> Pgm3d::getLimitsCoords() {
     QVector<GLfloat> vec(0);
 
     int nb_vertices = this->limitsIndices.size();
@@ -312,7 +295,7 @@ QVector<GLfloat> Vertices::getLimitsCoords() {
     return vec;
 }
 
-QVector<GLfloat> Vertices::getLimitsColors() {
+QVector<GLfloat> Pgm3d::getLimitsColors() {
     QVector<GLfloat> vec(0);
 
     int nb_vertices = this->limitsIndices.size();
@@ -322,7 +305,7 @@ QVector<GLfloat> Vertices::getLimitsColors() {
     return vec;
 }
 
-QVector<GLfloat> Vertices::getLimitsCoordsTriangles() {
+QVector<GLfloat> Pgm3d::getLimitsCoordsTriangles() {
     QVector<GLfloat> m_vertices_triangles(0);
 
     QVector<GLfloat> m_vertices = getLimitsCoords();
@@ -493,7 +476,7 @@ QVector<GLfloat> Vertices::getLimitsCoordsTriangles() {
     return m_vertices_triangles;
 }
 
-QVector<GLfloat> Vertices::getLimitsColorsTriangles() {
+QVector<GLfloat> Pgm3d::getLimitsColorsTriangles() {
     QVector<GLfloat> m_colors_triangles(0);
 
     int nb_vertices = this->limitsIndices.size();
@@ -514,7 +497,7 @@ QVector<GLfloat> Vertices::getLimitsColorsTriangles() {
     return m_colors_triangles;
 }
 
-QVector<GLfloat> Vertices::getLimitsCoordsCubes() {
+QVector<GLfloat> Pgm3d::getLimitsCoordsCubes() {
     QVector<GLfloat> m_vertices_triangles(0);
 
     QVector<GLfloat> m_vertices = getLimitsCoords();
@@ -708,7 +691,7 @@ QVector<GLfloat> Vertices::getLimitsCoordsCubes() {
     return m_vertices_triangles;
 }
 
-QVector<GLfloat> Vertices::getLimitsColorsCubes() {
+QVector<GLfloat> Pgm3d::getLimitsColorsCubes() {
     QVector<GLfloat> m_colors_triangles(0);
 
     int nb_vertices = this->limitsIndices.size();
