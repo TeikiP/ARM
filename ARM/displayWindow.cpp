@@ -1,4 +1,5 @@
 #include "displayWindow.h"
+#include "obj.h"
 
 #include <QtGui/QGuiApplication>
 #include <QtGui/QMatrix4x4>
@@ -9,9 +10,6 @@
 
 #include <iostream>
 using namespace std;
-
-#define PGM3D_PATH "../shepp_logan.pgm3d"
-
 
 static const char *vertexShaderSource =
     "attribute highp vec4 posAttr;\n"
@@ -52,23 +50,40 @@ void DisplayWindow::initialize()
     m_colAttr = m_program->attributeLocation("colAttr");
     m_matrixUniform = m_program->uniformLocation("matrix");
 
-    //QString filename = QFileDialog::getOpenFileName(0, tr("Open File"), ".", tr("Files (*.pgm3d *.obj)"));
-    QString filename = PGM3D_PATH;
+    QString filename = QFileDialog::getOpenFileName(0, tr("Open File"), ".", tr("Files (*.pgm3d *.obj)"));
 
-    Vertices vertex;
-    vertex.readFile(filename);
+    if (filename.endsWith(".pgm3d")) {
+        Vertices vertex;
+        vertex.readFile(filename);
 
-    m_vertices = vertex.getLimitsCoords();
-    m_colors = vertex.getLimitsColors();
-    m_size = m_vertices.size();
+        m_vertices = vertex.getLimitsCoords();
+        m_colors = vertex.getLimitsColors();
+        m_size = m_vertices.size();
 
-    m_vertices_triangles = vertex.getLimitsCoordsTriangles();
-    m_colors_triangles = vertex.getLimitsColorsTriangles();
-    m_size_triangles = m_vertices_triangles.size();
+        m_vertices_triangles = vertex.getLimitsCoordsTriangles();
+        m_colors_triangles = vertex.getLimitsColorsTriangles();
+        m_size_triangles = m_vertices_triangles.size();
 
-    m_vertices_cubes = vertex.getLimitsCoordsCubes();
-    m_colors_cubes = vertex.getLimitsColorsCubes();
-    m_size_cubes = m_vertices_cubes.size();
+        m_vertices_cubes = vertex.getLimitsCoordsCubes();
+        m_colors_cubes = vertex.getLimitsColorsCubes();
+        m_size_cubes = m_vertices_cubes.size();
+    }
+
+    else {
+        Obj obj = Obj(filename);
+
+        m_vertices = obj.getCoords();
+        m_colors = obj.getColors();
+        m_size = m_vertices.size();
+
+        m_vertices_triangles = m_vertices;
+        m_colors_triangles = m_colors;
+        m_size_triangles = m_size;
+
+        m_vertices_cubes = m_vertices;
+        m_colors_cubes = m_colors;
+        m_size_cubes = m_size;
+    }
 }
 
 void DisplayWindow::render()

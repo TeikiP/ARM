@@ -17,9 +17,13 @@ SOURCES += \
     main.cpp \
     vertices.cpp \
     openglwindow.cpp \
-    displayWindow.cpp
+    displayWindow.cpp \
+    tinyobjloader/tiny_obj_loader.cc \
+    obj.cpp
 
 HEADERS  += \
     vertices.h \
     openglwindow.h\
-    displayWindow.h
+    displayWindow.h \
+    tinyobjloader/tiny_obj_loader.h \
+    obj.h
