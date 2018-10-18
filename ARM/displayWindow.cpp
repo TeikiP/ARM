@@ -20,7 +20,6 @@ DisplayWindow::DisplayWindow()
     : m_program(0)
     ,m_angleX(0)
     ,m_angleY(0)
-    ,m_triangle(0)
     ,m_point(0)
     ,m_cube(1)
 {
@@ -50,10 +49,6 @@ void DisplayWindow::initialize()
         m_colors = pgm3d.getLimitsColors();
         m_size = m_vertices.size();
 
-        m_vertices_triangles = pgm3d.getLimitsCoordsTriangles();
-        m_colors_triangles = pgm3d.getLimitsColorsTriangles();
-        m_size_triangles = m_vertices_triangles.size();
-
         m_vertices_cubes = pgm3d.getLimitsCoordsCubes();
         m_colors_cubes = pgm3d.getLimitsColorsCubes();
         m_size_cubes = m_vertices_cubes.size();
@@ -65,10 +60,6 @@ void DisplayWindow::initialize()
         m_vertices = obj.getCoords();
         m_colors = obj.getColors();
         m_size = m_vertices.size();
-
-        m_vertices_triangles = m_vertices;
-        m_colors_triangles = m_colors;
-        m_size_triangles = m_size;
 
         m_vertices_cubes = m_vertices;
         m_colors_cubes = m_colors;
@@ -105,19 +96,6 @@ void DisplayWindow::render()
         glEnableVertexAttribArray(1);
 
         glDrawArrays(GL_POINTS, 0, m_size / 3);
-
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(0);
-    }
-
-    else if(m_triangle){
-        glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, m_vertices_triangles.data());
-        glVertexAttribPointer(m_colAttr, 4, GL_FLOAT, GL_FALSE, 0, m_colors_triangles.data());
-
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-
-        glDrawArrays(GL_TRIANGLES, 0, m_size_triangles / 3);
 
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(0);
@@ -165,21 +143,18 @@ void DisplayWindow::keyPressEvent(QKeyEvent *event)
             break;
 
         case Qt::Key_T :
-            m_triangle = true;
             m_point = false;
-            m_cube = false;
-            break;
-
-        case Qt::Key_P :
-            m_triangle = false;
-            m_point = true;
-            m_cube = false;
+            m_cube = true;
             break;
 
         case Qt::Key_C :
-            m_triangle = false;
             m_point = false;
             m_cube = true;
+            break;
+
+        case Qt::Key_P :
+            m_point = true;
+            m_cube = false;
             break;
 
         case Qt::Key_L :

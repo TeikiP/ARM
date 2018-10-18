@@ -203,6 +203,7 @@ void Pgm3d::readFile(const QString path)
     findLimitsIndices();
 }
 
+/**************************SURFACE FINDING*************************************/
 void Pgm3d::findLimitsIndices()
 {
     QVector<int> limitsIndices(0);
@@ -284,6 +285,9 @@ void Pgm3d::findLimitsIndices()
 }
 
 
+/*****************************POINT CLOUD**************************************/
+
+/* Generates and returns coordinates for a point cloud */
 QVector<GLfloat> Pgm3d::getLimitsCoords() {
     QVector<GLfloat> vec(0);
 
@@ -295,6 +299,7 @@ QVector<GLfloat> Pgm3d::getLimitsCoords() {
     return vec;
 }
 
+/* Generates and returns colors for a point cloud */
 QVector<GLfloat> Pgm3d::getLimitsColors() {
     QVector<GLfloat> vec(0);
 
@@ -305,198 +310,7 @@ QVector<GLfloat> Pgm3d::getLimitsColors() {
     return vec;
 }
 
-QVector<GLfloat> Pgm3d::getLimitsCoordsTriangles() {
-    QVector<GLfloat> m_vertices_triangles(0);
-
-    QVector<GLfloat> m_vertices = getLimitsCoords();
-
-    int nb_vertices = this->limitsIndices.size();
-    for (int i=0; i<nb_vertices; i+=3) {
-        GLfloat x = m_vertices.at(i);
-        GLfloat y = m_vertices.at(i+1);
-        GLfloat z = m_vertices.at(i+2);
-
-        //UNDER 1
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z+1);
-
-        //UNDER 2
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z+1);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z+1);
-
-        //TOP 1
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z+1);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z);
-
-        //TOP 2
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z+1);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z+1);
-
-        //FRONT 1
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z);
-
-        //FRONT 2
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z);
-
-        //BACK 1
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z+1);
-
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z+1);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z+1);
-
-        //BACK 2
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z+1);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z+1);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z+1);
-
-        //LEFT 1
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z+1);
-
-        //LEFT 2
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z+1);
-
-        m_vertices_triangles.push_back(x);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z+1);
-
-        //RIGHT 1
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z+1);
-
-        //RIGHT 2
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y);
-        m_vertices_triangles.push_back(z+1);
-
-        m_vertices_triangles.push_back(x+1);
-        m_vertices_triangles.push_back(y+1);
-        m_vertices_triangles.push_back(z+1);
-    }
-
-    return m_vertices_triangles;
-}
-
-QVector<GLfloat> Pgm3d::getLimitsColorsTriangles() {
-    QVector<GLfloat> m_colors_triangles(0);
-
-    int nb_vertices = this->limitsIndices.size();
-    for (int i=0; i<nb_vertices; i+=3) { // for every voxel
-        for (int j=0; j<12; j++) { // for every triangle of the cube around the voxel
-            for (int k=0; k<3; k++) { // for every vertice of the triangle
-                m_colors_triangles.push_back(this->colors[this->limitsIndices[i]]/255.0);
-                m_colors_triangles.push_back(this->colors[this->limitsIndices[i+1]]/255.0);
-                m_colors_triangles.push_back(this->colors[this->limitsIndices[i+2]]/255.0);
-                /*m_colors_triangles.push_back(255.0);
-                m_colors_triangles.push_back(255.0);
-                m_colors_triangles.push_back(255.0);*/
-                m_colors_triangles.push_back(0.05);
-            }
-        }
-    }
-
-    return m_colors_triangles;
-}
-
+/***********************TRIANGLES ET CUBES*************************************/
 QVector<GLfloat> Pgm3d::getLimitsCoordsCubes() {
     QVector<GLfloat> m_vertices_triangles(0);
 

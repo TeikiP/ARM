@@ -35,11 +35,9 @@ public:
 
     void readFile(const QString path);
 
-
     QVector<GLfloat> getLimitsCoords();
     QVector<GLfloat> getLimitsColors();
-    QVector<GLfloat> getLimitsCoordsTriangles();
-    QVector<GLfloat> getLimitsColorsTriangles();
+
     QVector<GLfloat> getLimitsCoordsCubes();
     QVector<GLfloat> getLimitsColorsCubes();
 };
