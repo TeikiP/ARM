@@ -41,7 +41,6 @@ void DisplayWindow::initialize()
 
     QString filename = QFileDialog::getOpenFileName(0, tr("Open File"), ".", tr("Files (*.pgm3d *.obj)"));
 
-
     if (filename.endsWith(".pgm3d")) {
         Pgm3d pgm3d = Pgm3d(filename);
 
@@ -90,7 +89,7 @@ void DisplayWindow::render()
 
     if(m_point){
         glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, m_vertices.data());
-        glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, m_colors.data());
+        glVertexAttribPointer(m_colAttr, 4, GL_FLOAT, GL_FALSE, 0, m_colors.data());
 
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);

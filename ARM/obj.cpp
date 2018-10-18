@@ -5,6 +5,7 @@
 #include <QString>
 
 #define TINYOBJLOADER_IMPLEMENTATION
+#define TRANSPARENCY_VALUE 0.5
 
 Obj::Obj(QString filename)
 {
@@ -54,7 +55,7 @@ Obj::Obj(QString filename)
                 colors.push_back(255);
                 colors.push_back(255);
                 colors.push_back(255);
-                colors.push_back(.5);
+                colors.push_back(TRANSPARENCY_VALUE);
             }
 
 

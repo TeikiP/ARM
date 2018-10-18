@@ -306,8 +306,13 @@ QVector<GLfloat> Pgm3d::getLimitsColors() {
     QVector<GLfloat> vec(0);
 
     int nb_vertices = this->limitsIndices.size();
-    for (int i = 0; i < nb_vertices; i++)
+    for (int i = 0; i < nb_vertices; i++) {
         vec.push_back(1);
+
+        //Alpha = 1
+        if(i % 3 == 2)
+            vec.push_back(1);
+    }
 
     return vec;
 }
