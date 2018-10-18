@@ -146,11 +146,6 @@ void DisplayWindow::keyPressEvent(QKeyEvent *event)
             m_cube = true;
             break;
 
-        case Qt::Key_C :
-            m_point = false;
-            m_cube = true;
-            break;
-
         case Qt::Key_P :
             m_point = true;
             m_cube = false;
