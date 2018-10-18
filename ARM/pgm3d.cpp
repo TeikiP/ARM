@@ -204,6 +204,8 @@ void Pgm3d::readFile(const QString path)
 }
 
 /**************************SURFACE FINDING*************************************/
+
+/* Finds and sets the indices of all the voxels that neighbour a voxel with a different value. */
 void Pgm3d::findLimitsIndices()
 {
     QVector<int> limitsIndices(0);
@@ -287,7 +289,7 @@ void Pgm3d::findLimitsIndices()
 
 /*****************************POINT CLOUD**************************************/
 
-/* Generates and returns coordinates for a point cloud */
+/* Generates and returns coordinates for a point cloud. */
 QVector<GLfloat> Pgm3d::getLimitsCoords() {
     QVector<GLfloat> vec(0);
 
@@ -299,7 +301,7 @@ QVector<GLfloat> Pgm3d::getLimitsCoords() {
     return vec;
 }
 
-/* Generates and returns colors for a point cloud */
+/* Generates and returns colors for a point cloud. */
 QVector<GLfloat> Pgm3d::getLimitsColors() {
     QVector<GLfloat> vec(0);
 
@@ -311,6 +313,9 @@ QVector<GLfloat> Pgm3d::getLimitsColors() {
 }
 
 /***********************TRIANGLES ET CUBES*************************************/
+
+/* Generates and returns coordinates for a cubic display.
+ * Adds only the faces that neighbour a voxel with a different color value. */
 QVector<GLfloat> Pgm3d::getLimitsCoordsCubes() {
     QVector<GLfloat> m_vertices_triangles(0);
 
@@ -505,6 +510,7 @@ QVector<GLfloat> Pgm3d::getLimitsCoordsCubes() {
     return m_vertices_triangles;
 }
 
+/* Generates and returns colors for a cubic display. */
 QVector<GLfloat> Pgm3d::getLimitsColorsCubes() {
     QVector<GLfloat> m_colors_triangles(0);
 
@@ -518,6 +524,7 @@ QVector<GLfloat> Pgm3d::getLimitsColorsCubes() {
 
         GLfloat colorInd = getColorAt(x, y, z);
 
+        // finds the amount of faces that need coloring
         int nb_faces = 0;
 
         if (colorInd != getColorAt(x+1, y, z))
@@ -540,9 +547,6 @@ QVector<GLfloat> Pgm3d::getLimitsColorsCubes() {
                 m_colors_triangles.push_back(this->colors[this->limitsIndices[i]]/255.0);
                 m_colors_triangles.push_back(this->colors[this->limitsIndices[i+1]]/255.0);
                 m_colors_triangles.push_back(this->colors[this->limitsIndices[i+2]]/255.0);
-                /*m_colors_triangles.push_back(255.0);
-                m_colors_triangles.push_back(255.0);
-                m_colors_triangles.push_back(255.0);*/
                 m_colors_triangles.push_back(TRANSPARENCY_VALUE);
             }
         }
