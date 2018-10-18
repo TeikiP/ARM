@@ -11,11 +11,11 @@ HOTKEYS :
  - Escape will close the window,
  - L will let you load a new model file,
  - P will switch the display to a point cloud,
- - T and C will switch the display to cubes made of triangles,
+ - T will switch the display to a triangle-based display,
  - the arrow keys will allow you to rotate the model,
  - holding left click also allows to rotate the model,
  - holding right click will translate the model along the X and Y axes,
- - the scroll wheel can be used to zoom in or out.  
+ - the scroll wheel can be used to zoom in or out.
 
 AUTHORS :
 Peruzzetto Enzo
