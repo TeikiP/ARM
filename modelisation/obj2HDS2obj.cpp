@@ -20,8 +20,6 @@
 #include <fstream>
 #include <iostream>
 
-using namespace std;
-
 template <class HDS>
 class BuildCgalPolyhedronFromObj : public CGAL::Modifier_base<HDS> {
 private:
@@ -174,11 +172,11 @@ main(int argc, char* argv[])
   write_obj(argv[2], P);
   // ---------------------------------
 
-  // CGAL::Geomview_stream geo;
-  // geo << CGAL::GREEN << P;
-  // //wait for a mouse click.
-  // Point_3 click;
-  // geo >> click;
+//   CGAL::Geomview_stream geo;
+//   geo << CGAL::GREEN << P;
+//   //wait for a mouse click.
+//   Point_3 click;
+//   geo >> click;
 
   f_in.close();
   std::cout << " obj2HDS2OBJ Success  " << std::endl ;
@@ -235,14 +233,23 @@ write_obj(const char* file_name, Polyhedron P)
 void fillHole(Polyhedron P)
  {
    //----------------------------------- Find Border -------------------
-   int val = 0;
-   Halfedge_iterator it;
-  for(it= P.border_halfedges_begin(); it !=  P.border_halfedges_end(); ++it)
-  {
-    val++;
-  }
-  cout << val << endl;
-   //----------------------------------- Triangulation -----------------
+//    int val = 0;
+//    for(it= P.border_halfedges_begin(); it !=  P.halfedges_end(); ++it)
+//    {
+//        if( (*it).is_border())
+//            val++;
+//    }
+//    cout << val << endl;
+
+    vector<vector> border;
+    Halfedge_iterator it;
+    while(count != P.size_of_border_halfedges())
+    {
+        vector<HalfedgeDS> tmp;
+
+    }
+
+    //----------------------------------- Triangulation -----------------
 
 
 }
