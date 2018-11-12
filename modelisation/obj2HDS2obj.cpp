@@ -19,6 +19,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 template <class HDS>
 class BuildCgalPolyhedronFromObj : public CGAL::Modifier_base<HDS> {
@@ -160,6 +161,7 @@ main(int argc, char* argv[])
 
   //----------------------------------- Fill Hole -------------------
 
+	std::cout << "----------FILLING HOLE---------------" << std::endl;
   fillHole(P);
 
   //----------------------------------- CGAL tests ----------------------
@@ -174,11 +176,10 @@ main(int argc, char* argv[])
   write_obj(argv[2], P);
   // ---------------------------------
 
-//   CGAL::Geomview_stream geo;
-//   geo << CGAL::GREEN << P;
-//   //wait for a mouse click.
-//   Point_3 click;
-//   geo >> click;
+  // CGAL::Geomview_stream geo;
+  // geo << CGAL::GREEN << P;
+  // Point_3 click;
+  // geo >> click;
 
   f_in.close();
   std::cout << " obj2HDS2OBJ Success  " << std::endl ;
@@ -234,11 +235,10 @@ write_obj(const char* file_name, Polyhedron P)
 
 void fillHole(Polyhedron& P)
  {
-    for(Halfedge_iterator it= P.border_halfedges_begin(); it !=  P.halfedges_end(); ++it)
+    for (Halfedge_iterator it = P.border_halfedges_begin(); it !=  P.halfedges_end(); ++it)
     {
-        if( (*it).is_border()){
+        if (it->is_border()) {
             P.fill_hole(it);
         }
     }
-
 }
