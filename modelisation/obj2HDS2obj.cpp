@@ -120,7 +120,9 @@ typedef Polyhedron::Facet_iterator Facet_iterator;
 
 using namespace std;
 
-void fillHole(Polyhedron P);
+void fillHole(Polyhedron& P);
+void fillHoleTriangle(Polyhedron& P);
+void fillHoleCenter(Polyhedron& P);
 void write_obj(const char* file_name, Polyhedron P);
 
 int
@@ -230,26 +232,13 @@ write_obj(const char* file_name, Polyhedron P)
   out.close();
 }
 
-void fillHole(Polyhedron P)
+void fillHole(Polyhedron& P)
  {
-   //----------------------------------- Find Border -------------------
-//    int val = 0;
-//    for(it= P.border_halfedges_begin(); it !=  P.halfedges_end(); ++it)
-//    {
-//        if( (*it).is_border())
-//            val++;
-//    }
-//    cout << val << endl;
-
-    vector<vector> border;
-    Halfedge_iterator it;
-    while(count != P.size_of_border_halfedges())
+    for(Halfedge_iterator it= P.border_halfedges_begin(); it !=  P.halfedges_end(); ++it)
     {
-        vector<HalfedgeDS> tmp;
-
+        if( (*it).is_border()){
+            P.fill_hole(it);
+        }
     }
-
-    //----------------------------------- Triangulation -----------------
-
 
 }
