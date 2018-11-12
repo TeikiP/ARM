@@ -101,11 +101,12 @@ public:
 };
 
 typedef CGAL::Simple_cartesian<double> Kernel;
+
 typedef CGAL::Polyhedron_3<Kernel> Polyhedron;
 typedef Polyhedron::HalfedgeDS HalfedgeDS;
 
 
-
+typedef Kernel::Plane_3 Plane_3;
 typedef Kernel::Point_3 Point_3;
 
 typedef Polyhedron::Vertex Vertex;
@@ -162,8 +163,8 @@ main(int argc, char* argv[])
   //----------------------------------- Fill Hole -------------------
 
 	std::cout << "----------FILLING HOLE---------------" << std::endl;
-  //fillHole(P);
-    fillHoleTriangle(P);
+  fillHole(P);
+//    fillHoleTriangle(P);
 
   //----------------------------------- CGAL tests ----------------------
 
@@ -236,10 +237,26 @@ write_obj(const char* file_name, Polyhedron P)
 
 void fillHole(Polyhedron& P)
  {
-    for (Halfedge_iterator it = P.border_halfedges_begin(); it !=  P.halfedges_end(); ++it)
+    Halfedge_iterator h, g, tmp;
+    for (h = P.border_halfedges_begin(); h !=  P.halfedges_end(); ++h)
     {
-        if (it->is_border()) {
-            P.fill_hole(it);
+        if (h->is_border()) {
+            P.fill_hole(h);
+//            const Point_3 a = h->vertex()->point();
+//            g = h->next();
+//            const Point_3 b = g->vertex()->point();
+//            g = g->next();
+//            const Point_3 c = g->vertex()->point();
+//            Plane_3 plan = Plane_3(a, b, c);
+//            tmp = g;
+//            g = g->next();
+//            while(g != h){
+//                if(!plan.has_on(g->vertex()->point()) ){
+//                    h = P.split_facet(h, tmp);
+//                }
+//                tmp = g;
+//                g = g->next();
+//            }
         }
     }
 }
