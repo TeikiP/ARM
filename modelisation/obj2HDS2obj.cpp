@@ -162,7 +162,8 @@ main(int argc, char* argv[])
   //----------------------------------- Fill Hole -------------------
 
 	std::cout << "----------FILLING HOLE---------------" << std::endl;
-  fillHole(P);
+  //fillHole(P);
+    fillHoleTriangle(P);
 
   //----------------------------------- CGAL tests ----------------------
 
@@ -239,6 +240,22 @@ void fillHole(Polyhedron& P)
     {
         if (it->is_border()) {
             P.fill_hole(it);
+        }
+    }
+}
+
+void fillHoleTriangle(Polyhedron& P)
+{
+    Halfedge_iterator h, g;
+
+    for (h = P.border_halfedges_begin(); h !=  P.halfedges_end(); ++h)
+    {
+        if (h->is_border()) {
+            g = h->next()->next();
+            while (g != h){
+                P.add_facet_to_border(h, g);
+                g = h->next()->next();
+            }
         }
     }
 }
