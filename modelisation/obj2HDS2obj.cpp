@@ -19,6 +19,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 template <class HDS>
 class BuildCgalPolyhedronFromObj : public CGAL::Modifier_base<HDS> {
@@ -120,7 +121,7 @@ typedef Polyhedron::Facet_iterator Facet_iterator;
 
 using namespace std;
 
-void fillHole(Polyhedron P);
+void fillHole(Polyhedron& P);
 void write_obj(const char* file_name, Polyhedron P);
 
 int
@@ -158,6 +159,7 @@ main(int argc, char* argv[])
 
   //----------------------------------- Fill Hole -------------------
 
+	std::cout << "----------FILLING HOLE---------------" << std::endl;
   fillHole(P);
 
   //----------------------------------- CGAL tests ----------------------
@@ -172,11 +174,10 @@ main(int argc, char* argv[])
   write_obj(argv[2], P);
   // ---------------------------------
 
-//   CGAL::Geomview_stream geo;
-//   geo << CGAL::GREEN << P;
-//   //wait for a mouse click.
-//   Point_3 click;
-//   geo >> click;
+  // CGAL::Geomview_stream geo;
+  // geo << CGAL::GREEN << P;
+  // Point_3 click;
+  // geo >> click;
 
   f_in.close();
   std::cout << " obj2HDS2OBJ Success  " << std::endl ;
@@ -230,26 +231,13 @@ write_obj(const char* file_name, Polyhedron P)
   out.close();
 }
 
-void fillHole(Polyhedron P)
+void fillHole(Polyhedron& P)
  {
-   //----------------------------------- Find Border -------------------
-//    int val = 0;
-//    for(it= P.border_halfedges_begin(); it !=  P.halfedges_end(); ++it)
-//    {
-//        if( (*it).is_border())
-//            val++;
-//    }
-//    cout << val << endl;
-
-    vector<vector> border;
-    Halfedge_iterator it;
-    while(count != P.size_of_border_halfedges())
-    {
-        vector<HalfedgeDS> tmp;
-
-    }
-
-    //----------------------------------- Triangulation -----------------
-
+   for (Halfedge_iterator it = P.border_halfedges_begin(); it !=  P.halfedges_end(); ++it)
+   {
+			if (it->is_border()) {
+			  P.fill_hole(it);
+			}
+   }
 
 }
