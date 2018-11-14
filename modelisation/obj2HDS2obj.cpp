@@ -242,21 +242,25 @@ void fillHole(Polyhedron& P)
     {
         if (h->is_border()) {
             P.fill_hole(h);
-//            const Point_3 a = h->vertex()->point();
-//            g = h->next();
-//            const Point_3 b = g->vertex()->point();
-//            g = g->next();
-//            const Point_3 c = g->vertex()->point();
-//            Plane_3 plan = Plane_3(a, b, c);
-//            tmp = g;
-//            g = g->next();
-//            while(g != h){
-//                if(!plan.has_on(g->vertex()->point()) ){
-//                    h = P.split_facet(h, tmp);
-//                }
-//                tmp = g;
-//                g = g->next();
-//            }
+            Plane_3 plan = Plane_3(h->vertex()->point(), h->next()->vertex()->point(), h->prev()->vertex()->point());//h->facet()->plane();
+            h = h->next();
+            g = h->prev();
+            while(g != h){
+
+                while( plan.has_on(h->vertex()->point()) && g != h ){
+                    h = h->next();
+                }
+                while( plan.has_on(g->vertex()->point()) && g != h){
+                    g = g->prev();
+                }
+                if(g == h || h->next() == g || g->next() == h)
+                    break;
+
+                h = P.split_facet(h, g);
+                h = h->opposite();
+                plan = Plane_3(h->vertex()->point(), h->next()->vertex()->point(), h->prev()->vertex()->point());
+                g = h->prev();
+            }
         }
     }
 }
