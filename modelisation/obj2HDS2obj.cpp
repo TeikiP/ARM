@@ -14,7 +14,6 @@
 #include <CGAL/Simple_cartesian.h>
 
 #include <CGAL/Cartesian.h>
-//#include <CGAL/Polyhedron_3.h>
 #include <CGAL/IO/Polyhedron_geomview_ostream.h>
 
 #include <fstream>
@@ -162,7 +161,7 @@ main(int argc, char* argv[])
   //----------------------------------- Fill Hole -------------------
 
 	std::cout << "----------FILLING HOLE---------------" << std::endl;
-  fillHole(P);
+  fillHoleCenter(P);
 
   //----------------------------------- CGAL tests ----------------------
 
@@ -240,5 +239,49 @@ void fillHole(Polyhedron& P)
         if (it->is_border()) {
             P.fill_hole(it);
         }
+    }
+}
+
+void fillHoleCenter(Polyhedron& P)
+ {
+    for (Halfedge_iterator it = P.border_halfedges_begin(); it !=  P.halfedges_end(); ++it)
+    {
+        if (it->is_border()) {
+            P.fill_hole(it);
+            
+						std::vector<Point_3> coords;
+						
+						Facet_iterator face = it->facet();
+						unsigned int degree = face->facet_degree();
+						
+						Halfedge_facet_circulator circulator = face->facet_begin();
+						Halfedge_facet_circulator start = face->facet_begin();
+						
+						do {
+						    coords.push_back(circulator->vertex()->point());
+						    //std::cout << circulator->vertex()->point() << std::endl;
+						} while (++circulator != start);
+						
+						float xMean = 0, yMean = 0, zMean = 0;
+						
+						for (int i = 0; i < coords.size(); i++) {
+						    xMean += coords.at(i)[0];
+						    yMean += coords.at(i)[1];
+						    zMean += coords.at(i)[2];
+						}
+						
+				    xMean /= coords.size();
+				    yMean /= coords.size();
+				    zMean /= coords.size();				    
+						
+						Point_3 barycenter = Point_3(xMean, yMean, zMean);
+						
+						std::cout << "Barycenter = " << barycenter << std::endl;
+
+						Halfedge_iterator centerEdge = P.create_center_vertex(it);
+						centerEdge->vertex()->point() = barycenter;
+						
+						std::cout << "---------------------------" << std::endl;
+				}
     }
 }
