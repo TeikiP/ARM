@@ -237,29 +237,40 @@ write_obj(const char* file_name, Polyhedron P)
 
 void fillHole(Polyhedron& P)
  {
-    Halfedge_iterator h, g, tmp;
-    for (h = P.border_halfedges_begin(); h !=  P.halfedges_end(); ++h)
+    Halfedge_iterator hole, h, g, tmp;
+    for (hole = P.border_halfedges_begin(); hole !=  P.halfedges_end(); ++hole)
     {
-        if (h->is_border()) {
-            P.fill_hole(h);
-            Plane_3 plan = Plane_3(h->vertex()->point(), h->next()->vertex()->point(), h->prev()->vertex()->point());//h->facet()->plane();
-            h = h->next();
-            g = h->prev();
-            while(g != h){
+        if (hole->is_border()) {
+						//TODO
+						//No fill holes
+						//No split facet
+						//Use add facet to border
 
-                while( plan.has_on(h->vertex()->point()) && g != h ){
+						P.fill_hole(hole);
+						std::cout << "Face created" << std::endl;
+            Plane_3 plan = Plane_3(hole->vertex()->point(), hole->next()->vertex()->point(), hole->prev()->vertex()->point());
+            h = hole->next();
+            g = hole->prev();
+
+            while(g != h) {
+                while( plan.has_on(h->next()->vertex()->point()) && g != h->next() ){
                     h = h->next();
                 }
-                while( plan.has_on(g->vertex()->point()) && g != h){
+
+                while( plan.has_on(g->prev()->vertex()->point()) && g->prev() != h ){
                     g = g->prev();
                 }
+
                 if(g == h || h->next() == g || g->next() == h)
                     break;
 
                 h = P.split_facet(h, g);
+								std::cout << "Face created" << std::endl;
+              //  h = P.add_facet_to_border(h, g);
                 h = h->opposite();
                 plan = Plane_3(h->vertex()->point(), h->next()->vertex()->point(), h->prev()->vertex()->point());
                 g = h->prev();
+
             }
         }
     }
@@ -287,38 +298,38 @@ void fillHoleCenter(Polyhedron& P)
     {
         if (it->is_border()) {
             P.fill_hole(it);
-            
+
 						std::vector<Point_3> coords;
-						
+
 						Facet_iterator face = it->facet();
 						unsigned int degree = face->facet_degree();
-						
+
 						Halfedge_facet_circulator circulator = face->facet_begin();
 						Halfedge_facet_circulator start = face->facet_begin();
-						
+
 						do {
 						    coords.push_back(circulator->vertex()->point());
 						} while (++circulator != start);
-						
+
 						float xMean = 0, yMean = 0, zMean = 0;
-						
+
 						for (int i = 0; i < coords.size(); i++) {
 						    xMean += coords.at(i)[0];
 						    yMean += coords.at(i)[1];
 						    zMean += coords.at(i)[2];
 						}
-						
+
 				    xMean /= coords.size();
 				    yMean /= coords.size();
-				    zMean /= coords.size();				    
-						
+				    zMean /= coords.size();
+
 						Point_3 barycenter = Point_3(xMean, yMean, zMean);
-						
+
 						std::cout << "Barycenter = " << barycenter << std::endl;
 
 						Halfedge_iterator centerEdge = P.create_center_vertex(it);
 						centerEdge->vertex()->point() = barycenter;
-						
+
 						std::cout << "---------------------------" << std::endl;
 				}
     }
