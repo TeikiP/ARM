@@ -107,6 +107,7 @@ typedef Polyhedron::HalfedgeDS HalfedgeDS;
 
 typedef Kernel::Plane_3 Plane_3;
 typedef Kernel::Point_3 Point_3;
+typedef Kernel::Vector_3 Vector_3;
 
 typedef Polyhedron::Vertex Vertex;
 typedef Polyhedron::Vertex_iterator Vertex_iterator;
@@ -119,12 +120,25 @@ typedef Polyhedron::Halfedge_around_vertex_circulator Halfedge_vertex_circulator
 
 typedef Polyhedron::Facet_iterator Facet_iterator;
 
+struct Plane_equation {
+    template <class Facet>
+    typename Facet::Plane_3 operator()( Facet& f) {
+        typename Facet::Halfedge_handle h = f.halfedge();
+        typedef typename Facet::Plane_3  Plane;
+        return Plane( h->vertex()->point(),
+                      h->next()->vertex()->point(),
+                      h->next()->next()->vertex()->point());
+    }
+};
+
+
 using namespace std;
 
 void fillHole(Polyhedron& P);
 void fillHoleTriangle(Polyhedron& P);
 void fillHoleCenter(Polyhedron& P);
 void write_obj(const char* file_name, Polyhedron P);
+void widen(Polyhedron &P, double d);
 
 int
 main(int argc, char* argv[])
@@ -161,10 +175,14 @@ main(int argc, char* argv[])
 
   //----------------------------------- Fill Hole -------------------
 
-	std::cout << "----------FILLING HOLE---------------" << std::endl;
-  fillHole(P);
+  std::transform( P.facets_begin(), P.facets_end(), P.planes_begin(), Plane_equation());
+
+//    std::cout << "----------FILLING HOLE---------------" << std::endl;
+//  fillHole(P);
 //    fillHoleTriangle(P);
 //    fillHoleCenter(P);
+    std::cout << "----------WIDEN---------------" << std::endl;
+    widen(P,3);
 
   //----------------------------------- CGAL tests ----------------------
 
@@ -214,6 +232,7 @@ write_obj(const char* file_name, Polyhedron P)
     mapping[ &*vi] = vn;
     vn++;
   }
+
   writer.write_facet_header();
   Facet_iterator fi= P.facets_begin();
   for( ; fi != P.facets_end(); ++fi){
@@ -235,6 +254,7 @@ write_obj(const char* file_name, Polyhedron P)
   out.close();
 }
 
+
 void fillHole(Polyhedron& P)
  {
     Halfedge_iterator hole, h, g, tmp;
@@ -246,9 +266,22 @@ void fillHole(Polyhedron& P)
 						//No split facet
 						//Use add facet to border
 
-						P.fill_hole(hole);
-						std::cout << "Face created" << std::endl;
+            P.fill_hole(hole);
+            std::cout << "Face created" << std::endl;
             Plane_3 plan = Plane_3(hole->vertex()->point(), hole->next()->vertex()->point(), hole->prev()->vertex()->point());
+
+            Vector_3 normal = plan.orthogonal_vector();
+            Vector_3 n1 = hole->opposite()->facet()->plane().orthogonal_vector();
+            Vector_3 n2 = hole->next()->opposite()->facet()->plane().orthogonal_vector();
+            Vector_3 n3 = hole->prev()->opposite()->facet()->plane().orthogonal_vector();
+            while( cross_product(normal, n1) == Vector_3(CGAL::NULL_VECTOR) || cross_product(normal, n2) == Vector_3(CGAL::NULL_VECTOR) || cross_product(normal, n2) == Vector_3(CGAL::NULL_VECTOR)){
+                hole = hole->next();
+                plan = Plane_3(hole->vertex()->point(), hole->next()->vertex()->point(), hole->prev()->vertex()->point());
+                n1 = hole->opposite()->facet()->plane().orthogonal_vector();
+                n2 = hole->next()->opposite()->facet()->plane().orthogonal_vector();
+                n3 = hole->prev()->opposite()->facet()->plane().orthogonal_vector();
+            }
+
             h = hole->next();
             g = hole->prev();
 
@@ -265,10 +298,24 @@ void fillHole(Polyhedron& P)
                     break;
 
                 h = P.split_facet(h, g);
-								std::cout << "Face created" << std::endl;
-              //  h = P.add_facet_to_border(h, g);
+                std::cout << "Face created" << std::endl;
+                //  h = P.add_facet_to_border(h, g);
                 h = h->opposite();
                 plan = Plane_3(h->vertex()->point(), h->next()->vertex()->point(), h->prev()->vertex()->point());
+
+                normal = plan.orthogonal_vector();
+                n1 = hole->opposite()->facet()->plane().orthogonal_vector();
+                n2 = hole->next()->opposite()->facet()->plane().orthogonal_vector();
+                n3 = hole->prev()->opposite()->facet()->plane().orthogonal_vector();
+
+                while( cross_product(normal, n1) == Vector_3(CGAL::NULL_VECTOR) || cross_product(normal, n2) == Vector_3(CGAL::NULL_VECTOR) || cross_product(normal, n2) == Vector_3(CGAL::NULL_VECTOR)){
+                    h = h->next();
+                    plan = Plane_3(h->vertex()->point(), h->next()->vertex()->point(), h->prev()->vertex()->point());
+                    n1 = h->opposite()->facet()->plane().orthogonal_vector();
+                    n2 = h->next()->opposite()->facet()->plane().orthogonal_vector();
+                    n3 = h->prev()->opposite()->facet()->plane().orthogonal_vector();
+                }
+
                 g = h->prev();
 
             }
@@ -334,3 +381,38 @@ void fillHoleCenter(Polyhedron& P)
 				}
     }
 }
+
+void widen(Polyhedron &P, double d)
+{
+    // pas circulator faire avec next->opposite
+    for(Facet_iterator fit = P.facets_begin(); fit != P.facets_end(); ++fit)
+    {
+        vector<Vertex> vertex;
+        Halfedge_facet_circulator hfc= fit->facet_begin();
+        do{
+          if(!hfc->is_border()) {
+              Vertex_iterator v = hfc->vertex();
+
+              Halfedge_vertex_circulator hvc = v->vertex_begin();
+
+              Vector_3 normal = Vector_3(0.,0.,0.);
+              int nbface = 0;
+              do{
+                  normal = normal + hvc->facet()->plane().orthogonal_vector();
+                  nbface++;
+                  hvc++;
+              }while(hvc != v->vertex_begin());
+
+              normal = normal / nbface;
+              vertex.push_back( Vertex(v->point() + normal * d ));
+          }
+          ++hfc;
+        }while(hfc != fit->facet_begin());
+
+
+         //Top
+
+    }
+}
+
+
