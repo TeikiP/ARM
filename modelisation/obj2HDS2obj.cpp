@@ -139,6 +139,7 @@ void fillHoleTriangle(Polyhedron& P);
 void fillHoleCenter(Polyhedron& P);
 void write_obj(const char* file_name, Polyhedron P);
 void widen(Polyhedron &P, double d);
+void build_faces(Polyhedron& P, vector<vector<vector<Vertex>>> face);
 
 int
 main(int argc, char* argv[])
@@ -177,12 +178,12 @@ main(int argc, char* argv[])
 
   std::transform( P.facets_begin(), P.facets_end(), P.planes_begin(), Plane_equation());
 
-//    std::cout << "----------FILLING HOLE---------------" << std::endl;
-//  fillHole(P);
+    std::cout << "----------FILLING HOLE---------------" << std::endl;
+  fillHole(P);
 //    fillHoleTriangle(P);
 //    fillHoleCenter(P);
-    std::cout << "----------WIDEN---------------" << std::endl;
-    widen(P,3);
+//    std::cout << "----------WIDEN---------------" << std::endl;
+//    widen(P,1.5);
 
   //----------------------------------- CGAL tests ----------------------
 
@@ -384,10 +385,12 @@ void fillHoleCenter(Polyhedron& P)
 
 void widen(Polyhedron &P, double d)
 {
-    // pas circulator faire avec next->opposite
-    for(Facet_iterator fit = P.facets_begin(); fit != P.facets_end(); ++fit)
+    vector<vector<vector<Vertex>>> faces;
+    int iFit=0;
+
+    for(Facet_iterator fit = P.facets_begin(); fit != P.facets_end(); fit++, iFit++)
     {
-        vector<Vertex> vertex;
+        vector<vector<Vertex>> verts;
         Halfedge_facet_circulator hfc= fit->facet_begin();
         do{
           if(!hfc->is_border()) {
@@ -397,22 +400,56 @@ void widen(Polyhedron &P, double d)
 
               Vector_3 normal = Vector_3(0.,0.,0.);
               int nbface = 0;
+
               do{
-                  normal = normal + hvc->facet()->plane().orthogonal_vector();
-                  nbface++;
+                  if(!hvc->is_border())
+                  {
+                      normal = normal + hvc->facet()->plane().orthogonal_vector();
+                      nbface++;
+
+                  }
                   hvc++;
               }while(hvc != v->vertex_begin());
 
               normal = normal / nbface;
-              vertex.push_back( Vertex(v->point() + normal * d ));
+              vector<Vertex> vert;
+              vert.push_back(Vertex(v->point()));
+              vert.push_back(Vertex(v->point() + normal * d ));
+              verts.push_back(vert);
           }
           ++hfc;
         }while(hfc != fit->facet_begin());
 
-
-         //Top
+        faces.push_back(verts);
 
     }
+
+    build_faces(P, faces);
 }
 
+void build_faces(Polyhedron& P, vector<vector<vector<Vertex>>> face)
+{
 
+
+    for(int i=0; i<face.size(); ++i)
+    {
+        Point_3 A = face[i][0][1].point();
+        std::cout << "A: "<<A << std::endl;
+
+
+        for(int j=0; j<face[i].size()-2; ++j)
+        {
+
+            Point_3 B = face[i][j+1][1].point();
+            std::cout << "B: "<<B << std::endl;
+            Point_3 C = face[i][j+2][1].point();
+            std::cout << "C: "<<C << std::endl;
+
+            Halfedge_iterator h = P.make_triangle(A,B,C);
+            std::cout << h->vertex()->point() << std::endl;
+            std::cout << h->next()->vertex()->point() << std::endl;
+            std::cout << h->next()->next()->vertex()->point() << std::endl;
+
+        }
+    }
+}
