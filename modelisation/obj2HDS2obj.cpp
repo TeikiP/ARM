@@ -178,13 +178,13 @@ main(int argc, char* argv[])
 
   std::transform( P.facets_begin(), P.facets_end(), P.planes_begin(), Plane_equation());
 
-    std::cout << "----------FILLING HOLE---------------" << std::endl;
-  fillHole(P);
+//    std::cout << "----------FILLING HOLE---------------" << std::endl;
+//  fillHole(P);
 //    fillHoleTriangle(P);
 //    fillHoleCenter(P);
-//    std::cout << "----------WIDEN---------------" << std::endl;
-//    widen(P,1.5);
-
+    std::cout << "----------WIDEN---------------" << std::endl;
+    widen(P,1.5);
+//    widen(P,3);
   //----------------------------------- CGAL tests ----------------------
 
   std::cout<< " is valid? (combinatorial consistency) " << P.is_valid() << std::endl;
